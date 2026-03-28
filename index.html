@@ -281,7 +281,112 @@
 </div>
 
 <script>
-  // JS goes here — added in Tasks 2–6
+  // ── SKIN DATA ──
+  // Verified nums from DDragon 15.1.1
+  const SKINS = [
+    { num: 0,  name: 'Default Yasuo' },
+    { num: 1,  name: 'High Noon Yasuo' },
+    { num: 2,  name: 'PROJECT: Yasuo' },
+    { num: 3,  name: 'Blood Moon Yasuo' },
+    { num: 9,  name: 'Nightbringer Yasuo' },
+    { num: 10, name: 'Odyssey Yasuo' },
+    { num: 17, name: 'Battle Boss Yasuo' },
+    { num: 18, name: 'True Damage Yasuo' },
+    { num: 35, name: 'Prestige True Damage Yasuo' },
+    { num: 36, name: 'Spirit Blossom Yasuo' },
+    { num: 45, name: 'Sea Dog Yasuo' },
+    { num: 54, name: 'Truth Dragon Yasuo' },
+    { num: 55, name: 'Dream Dragon Yasuo' },
+    { num: 56, name: 'Inkshadow Yasuo' },
+    { num: 57, name: 'Prestige Inkshadow Yasuo' },
+    { num: 68, name: 'Foreseen Yasuo' },
+    { num: 77, name: 'Battle Wolf Yasuo' },
+    { num: 87, name: 'Genesis Nightbringer Yasuo' },
+  ];
+
+  const DDR = 'https://ddragon.leagueoflegends.com/cdn/img/champion';
+  const thumbUrl = num => `${DDR}/loading/Yasuo_${num}.jpg`;
+  const splashUrl = num => `${DDR}/splash/Yasuo_${num}.jpg`;
+
+  // ── STATE ──
+  const LS_KEY = 'yaspin_enabled_skins';
+
+  function loadEnabled() {
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (raw) return new Set(JSON.parse(raw));
+    } catch (_) {}
+    return new Set(SKINS.map(s => s.num)); // default: all enabled
+  }
+
+  function saveEnabled(enabledSet) {
+    localStorage.setItem(LS_KEY, JSON.stringify([...enabledSet]));
+  }
+
+  let enabled = loadEnabled();
+
+  // ── SIDEBAR ──
+  const skinList = document.getElementById('skin-list');
+
+  function renderSidebar() {
+    skinList.innerHTML = '';
+    SKINS.forEach(skin => {
+      const isActive = enabled.has(skin.num);
+      const item = document.createElement('div');
+      item.className = 'skin-item ' + (isActive ? 'active' : 'inactive');
+      item.dataset.num = skin.num;
+      item.innerHTML = `
+        <img class="skin-thumb" src="${thumbUrl(skin.num)}" alt="${skin.name}" loading="lazy"/>
+        <span class="skin-label">${skin.name}</span>
+        <div class="toggle-dot"></div>
+      `;
+      item.addEventListener('click', () => toggleSkin(skin.num));
+      skinList.appendChild(item);
+    });
+  }
+
+  function toggleSkin(num) {
+    if (enabled.has(num)) {
+      enabled.delete(num);
+    } else {
+      enabled.add(num);
+    }
+    saveEnabled(enabled);
+    renderSidebar();
+    renderWheel();
+    updateSpinBtn();
+  }
+
+  // ── ALL / NONE ──
+  document.getElementById('toggle-all-btn').addEventListener('click', () => {
+    if (enabled.size === SKINS.length) {
+      enabled.clear();
+    } else {
+      SKINS.forEach(s => enabled.add(s.num));
+    }
+    saveEnabled(enabled);
+    renderSidebar();
+    renderWheel();
+    updateSpinBtn();
+  });
+
+  function updateSpinBtn() {
+    const spinBtn = document.getElementById('spin-btn');
+    const msg = document.getElementById('no-skins-msg');
+    if (enabled.size === 0) {
+      spinBtn.disabled = true;
+      msg.style.display = 'block';
+    } else {
+      spinBtn.disabled = false;
+      msg.style.display = 'none';
+    }
+  }
+
+  // Stub — filled in Task 3
+  function renderWheel() {}
+
+  renderSidebar();
+  updateSpinBtn();
 </script>
 
 </body>
