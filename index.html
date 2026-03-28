@@ -320,13 +320,17 @@
   }
 
   function saveEnabled(enabledSet) {
-    localStorage.setItem(LS_KEY, JSON.stringify([...enabledSet]));
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify([...enabledSet]));
+    } catch (_) {}
   }
 
   let enabled = loadEnabled();
 
   // ── SIDEBAR ──
   const skinList = document.getElementById('skin-list');
+  const spinBtn = document.getElementById('spin-btn');
+  const noSkinsMsg = document.getElementById('no-skins-msg');
 
   function renderSidebar() {
     skinList.innerHTML = '';
@@ -371,22 +375,102 @@
   });
 
   function updateSpinBtn() {
-    const spinBtn = document.getElementById('spin-btn');
-    const msg = document.getElementById('no-skins-msg');
     if (enabled.size === 0) {
       spinBtn.disabled = true;
-      msg.style.display = 'block';
+      noSkinsMsg.style.display = 'block';
     } else {
       spinBtn.disabled = false;
-      msg.style.display = 'none';
+      noSkinsMsg.style.display = 'none';
     }
   }
 
-  // Stub — filled in Task 3
-  function renderWheel() {}
+  function renderWheel() {
+    const svg = document.getElementById('wheel-svg');
+    const cx = 180, cy = 180, r = 160, innerR = 28;
+    const activeSkins = SKINS.filter(s => enabled.has(s.num));
+
+    svg.innerHTML = '';
+
+    if (activeSkins.length === 0) {
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', cx); circle.setAttribute('cy', cy); circle.setAttribute('r', r);
+      circle.setAttribute('fill', '#130326'); circle.setAttribute('stroke', '#7a5aaa'); circle.setAttribute('stroke-width', '2');
+      svg.appendChild(circle);
+      return;
+    }
+
+    const segAngle = 360 / activeSkins.length;
+    const fills = ['#241050', '#130326'];
+
+    activeSkins.forEach((skin, i) => {
+      const startAngle = i * segAngle - 90; // -90 so first segment starts at top
+      const endAngle = startAngle + segAngle;
+      const startRad = startAngle * Math.PI / 180;
+      const endRad = endAngle * Math.PI / 180;
+
+      const x1 = cx + r * Math.cos(startRad);
+      const y1 = cy + r * Math.sin(startRad);
+      const x2 = cx + r * Math.cos(endRad);
+      const y2 = cy + r * Math.sin(endRad);
+      const largeArc = segAngle > 180 ? 1 : 0;
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      if (activeSkins.length === 1) {
+        path.setAttribute('d', `M ${cx} ${cy - r} A ${r} ${r} 0 1 1 ${cx - 0.01} ${cy - r} Z`);
+      } else {
+        path.setAttribute('d',
+          `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`
+        );
+      }
+      path.setAttribute('fill', fills[i % 2]);
+      path.setAttribute('stroke', '#7a5aaa');
+      path.setAttribute('stroke-width', '1.5');
+      svg.appendChild(path);
+
+      // Label — mid-arc, ~65% out from center
+      const midAngle = (startAngle + segAngle / 2) * Math.PI / 180;
+      const labelR = r * 0.65;
+      const lx = cx + labelR * Math.cos(midAngle);
+      const ly = cy + labelR * Math.sin(midAngle);
+      const rotateDeg = startAngle + segAngle / 2 + 90;
+
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', lx);
+      text.setAttribute('y', ly);
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('dominant-baseline', 'middle');
+      text.setAttribute('fill', '#d8c8f0');
+      text.setAttribute('font-size', activeSkins.length > 8 ? '8' : '9');
+      text.setAttribute('letter-spacing', '0.5');
+      text.setAttribute('transform', `rotate(${rotateDeg}, ${lx}, ${ly})`);
+      text.textContent = skin.name.replace(' Yasuo', '').replace('Yasuo', '').trim();
+      svg.appendChild(text);
+    });
+
+    // Outer glow ring
+    const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    ring.setAttribute('cx', cx); ring.setAttribute('cy', cy); ring.setAttribute('r', r + 3);
+    ring.setAttribute('fill', 'none'); ring.setAttribute('stroke', '#7a5aaa33'); ring.setAttribute('stroke-width', '3');
+    svg.appendChild(ring);
+
+    // Center circle
+    const center = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    center.setAttribute('cx', cx); center.setAttribute('cy', cy); center.setAttribute('r', innerR);
+    center.setAttribute('fill', '#08001a'); center.setAttribute('stroke', '#7a5aaa'); center.setAttribute('stroke-width', '2');
+    svg.appendChild(center);
+
+    const centerText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    centerText.setAttribute('x', cx); centerText.setAttribute('y', cy);
+    centerText.setAttribute('text-anchor', 'middle'); centerText.setAttribute('dominant-baseline', 'middle');
+    centerText.setAttribute('fill', '#7a5aaa'); centerText.setAttribute('font-size', '8');
+    centerText.setAttribute('letter-spacing', '1');
+    centerText.textContent = 'YASUO';
+    svg.appendChild(centerText);
+  }
 
   renderSidebar();
   updateSpinBtn();
+  renderWheel();
 </script>
 
 </body>
