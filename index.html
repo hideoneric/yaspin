@@ -326,6 +326,8 @@
   }
 
   let enabled = loadEnabled();
+  let isSpinning = false;
+  let currentRotation = 0; // tracks cumulative rotation to avoid CSS reset jumps
 
   // ── SIDEBAR ──
   const skinList = document.getElementById('skin-list');
@@ -492,6 +494,53 @@
   renderSidebar();
   updateSpinBtn();
   renderWheel();
+
+  // ── SPIN ──
+  function spin() {
+    if (isSpinning) return;
+    const activeSkins = SKINS.filter(s => enabled.has(s.num));
+    if (activeSkins.length === 0) return;
+
+    isSpinning = true;
+    spinBtn.disabled = true;
+
+    // Pick winner
+    const winnerIdx = Math.floor(Math.random() * activeSkins.length);
+    const winner = activeSkins[winnerIdx];
+
+    // Calculate target rotation so the pointer (top) lands on the middle of the winner's segment.
+    // Segments start at -90° (top), so segment i's midpoint is at i * segAngle + segAngle/2 degrees from top.
+    const n = activeSkins.length;
+    const segAngle = 360 / n;
+    const winnerMidAngle = winnerIdx * segAngle + segAngle / 2;
+    const extraSpins = (5 + Math.floor(Math.random() * 3)) * 360;
+    const targetRotation = currentRotation + extraSpins + (360 - (currentRotation % 360)) % 360 + (360 - winnerMidAngle) % 360;
+
+    wheelSvg.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 1.0)';
+    wheelSvg.style.transform = `rotate(${targetRotation}deg)`;
+    currentRotation = targetRotation;
+
+    wheelSvg.addEventListener('transitionend', () => {
+      isSpinning = false;
+      showResult(winner);
+    }, { once: true });
+  }
+
+  document.getElementById('spin-btn').addEventListener('click', spin);
+
+  // ── RESULT CARD ──
+  function showResult(skin) {
+    document.getElementById('result-skin-name').textContent = skin.name.toUpperCase();
+    document.getElementById('result-splash').src = splashUrl(skin.num);
+    document.getElementById('result-card').classList.add('visible');
+  }
+
+  function hideResult() {
+    document.getElementById('result-card').classList.remove('visible');
+    spinBtn.disabled = enabled.size === 0;
+  }
+
+  document.getElementById('spin-again-btn').addEventListener('click', hideResult);
 </script>
 
 </body>
