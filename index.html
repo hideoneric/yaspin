@@ -331,6 +331,7 @@
   const skinList = document.getElementById('skin-list');
   const spinBtn = document.getElementById('spin-btn');
   const noSkinsMsg = document.getElementById('no-skins-msg');
+  const wheelSvg = document.getElementById('wheel-svg');
 
   function renderSidebar() {
     skinList.innerHTML = '';
@@ -385,17 +386,33 @@
   }
 
   function renderWheel() {
-    const svg = document.getElementById('wheel-svg');
     const cx = 180, cy = 180, r = 160, innerR = 28;
     const activeSkins = SKINS.filter(s => enabled.has(s.num));
 
-    svg.innerHTML = '';
+    wheelSvg.innerHTML = '';
 
     if (activeSkins.length === 0) {
       const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
       circle.setAttribute('cx', cx); circle.setAttribute('cy', cy); circle.setAttribute('r', r);
       circle.setAttribute('fill', '#130326'); circle.setAttribute('stroke', '#7a5aaa'); circle.setAttribute('stroke-width', '2');
-      svg.appendChild(circle);
+      wheelSvg.appendChild(circle);
+      // Glow ring
+      const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      ring.setAttribute('cx', cx); ring.setAttribute('cy', cy); ring.setAttribute('r', r + 3);
+      ring.setAttribute('fill', 'none'); ring.setAttribute('stroke', '#7a5aaa33'); ring.setAttribute('stroke-width', '3');
+      wheelSvg.appendChild(ring);
+      // Center circle
+      const center = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      center.setAttribute('cx', cx); center.setAttribute('cy', cy); center.setAttribute('r', innerR);
+      center.setAttribute('fill', '#08001a'); center.setAttribute('stroke', '#7a5aaa'); center.setAttribute('stroke-width', '2');
+      wheelSvg.appendChild(center);
+      const centerText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      centerText.setAttribute('x', cx); centerText.setAttribute('y', cy);
+      centerText.setAttribute('text-anchor', 'middle'); centerText.setAttribute('dominant-baseline', 'middle');
+      centerText.setAttribute('fill', '#7a5aaa'); centerText.setAttribute('font-size', '8');
+      centerText.setAttribute('letter-spacing', '1');
+      centerText.textContent = 'YASUO';
+      wheelSvg.appendChild(centerText);
       return;
     }
 
@@ -425,14 +442,16 @@
       path.setAttribute('fill', fills[i % 2]);
       path.setAttribute('stroke', '#7a5aaa');
       path.setAttribute('stroke-width', '1.5');
-      svg.appendChild(path);
+      wheelSvg.appendChild(path);
 
       // Label — mid-arc, ~65% out from center
       const midAngle = (startAngle + segAngle / 2) * Math.PI / 180;
       const labelR = r * 0.65;
       const lx = cx + labelR * Math.cos(midAngle);
       const ly = cy + labelR * Math.sin(midAngle);
-      const rotateDeg = startAngle + segAngle / 2 + 90;
+      let rotateDeg = startAngle + segAngle / 2 + 90;
+      const normalized = ((rotateDeg % 360) + 360) % 360;
+      if (normalized > 90 && normalized < 270) rotateDeg += 180;
 
       const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       text.setAttribute('x', lx);
@@ -443,21 +462,23 @@
       text.setAttribute('font-size', activeSkins.length > 8 ? '8' : '9');
       text.setAttribute('letter-spacing', '0.5');
       text.setAttribute('transform', `rotate(${rotateDeg}, ${lx}, ${ly})`);
-      text.textContent = skin.name.replace(' Yasuo', '').replace('Yasuo', '').trim();
-      svg.appendChild(text);
+      const label = skin.name.replace(' Yasuo', '').replace(': Yasuo', '').replace('Yasuo', '').replace(':', '').trim();
+      const maxChars = activeSkins.length > 12 ? 10 : activeSkins.length > 8 ? 14 : 18;
+      text.textContent = label.length > maxChars ? label.slice(0, maxChars - 1) + '…' : label;
+      wheelSvg.appendChild(text);
     });
 
     // Outer glow ring
     const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     ring.setAttribute('cx', cx); ring.setAttribute('cy', cy); ring.setAttribute('r', r + 3);
     ring.setAttribute('fill', 'none'); ring.setAttribute('stroke', '#7a5aaa33'); ring.setAttribute('stroke-width', '3');
-    svg.appendChild(ring);
+    wheelSvg.appendChild(ring);
 
     // Center circle
     const center = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     center.setAttribute('cx', cx); center.setAttribute('cy', cy); center.setAttribute('r', innerR);
     center.setAttribute('fill', '#08001a'); center.setAttribute('stroke', '#7a5aaa'); center.setAttribute('stroke-width', '2');
-    svg.appendChild(center);
+    wheelSvg.appendChild(center);
 
     const centerText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     centerText.setAttribute('x', cx); centerText.setAttribute('y', cy);
@@ -465,7 +486,7 @@
     centerText.setAttribute('fill', '#7a5aaa'); centerText.setAttribute('font-size', '8');
     centerText.setAttribute('letter-spacing', '1');
     centerText.textContent = 'YASUO';
-    svg.appendChild(centerText);
+    wheelSvg.appendChild(centerText);
   }
 
   renderSidebar();
