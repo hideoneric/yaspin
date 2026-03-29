@@ -360,7 +360,7 @@
     }
     saveEnabled(enabled);
     renderSidebar();
-    renderWheel();
+    if (!isSpinning) renderWheel();
     updateSpinBtn();
   }
 
@@ -373,7 +373,7 @@
     }
     saveEnabled(enabled);
     renderSidebar();
-    renderWheel();
+    if (!isSpinning) renderWheel();
     updateSpinBtn();
   });
 
@@ -382,7 +382,7 @@
       spinBtn.disabled = true;
       noSkinsMsg.style.display = 'block';
     } else {
-      spinBtn.disabled = false;
+      spinBtn.disabled = isSpinning;
       noSkinsMsg.style.display = 'none';
     }
   }
@@ -514,7 +514,9 @@
     const segAngle = 360 / n;
     const winnerMidAngle = winnerIdx * segAngle + segAngle / 2;
     const extraSpins = (5 + Math.floor(Math.random() * 3)) * 360;
-    const targetRotation = currentRotation + extraSpins + (360 - (currentRotation % 360)) % 360 + (360 - winnerMidAngle) % 360;
+    const currentMod = currentRotation % 360;
+    const degreesToWinner = ((winnerMidAngle - currentMod) + 360) % 360;
+    const targetRotation = currentRotation + extraSpins + degreesToWinner;
 
     wheelSvg.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 1.0)';
     wheelSvg.style.transform = `rotate(${targetRotation}deg)`;
