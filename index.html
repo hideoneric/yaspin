@@ -10,11 +10,11 @@
   body {
     background: linear-gradient(135deg, #130326 0%, #0b0b22 50%, #001428 100%);
     min-height: 100vh;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     color: #d8c8f0;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: auto;
   }
 
   header {
@@ -36,7 +36,7 @@
   .app {
     display: flex;
     flex: 1;
-    min-height: 0;
+    min-height: 500px;
     overflow: hidden;
   }
 
@@ -245,6 +245,21 @@
   .skin-item.inactive .toggle-dot {
     background: #2e1a50;
     box-shadow: none;
+  }
+
+  #spin-btn:not(:disabled):hover {
+    background: linear-gradient(135deg, #7a4ab0, #4e2a88);
+    box-shadow: 0 0 20px #7a5aaa66;
+  }
+  #spin-again-btn:hover {
+    background: #7a5aaa18;
+  }
+  #toggle-all-btn:hover {
+    color: #d8c8f0;
+  }
+  .skin-item:hover {
+    border-color: #7a5aaa66;
+    background: #1e0840aa;
   }
 </style>
 </head>
