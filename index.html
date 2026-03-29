@@ -281,7 +281,7 @@
 
     <div id="result-card">
       <div id="result-skin-name"></div>
-      <img id="result-splash" src="" alt=""/>
+      <img id="result-splash" alt=""/>
       <button id="spin-again-btn">SPIN AGAIN</button>
     </div>
   </div>
@@ -530,7 +530,7 @@
     const winnerMidAngle = winnerIdx * segAngle + segAngle / 2;
     const extraSpins = (5 + Math.floor(Math.random() * 3)) * 360;
     const currentMod = currentRotation % 360;
-    const degreesToWinner = ((winnerMidAngle - currentMod) + 360) % 360;
+    const degreesToWinner = ((360 - winnerMidAngle - currentMod) + 360) % 360;
     const targetRotation = currentRotation + extraSpins + degreesToWinner;
 
     wheelSvg.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 1.0)';
