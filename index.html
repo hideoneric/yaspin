@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yaspin</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: linear-gradient(135deg, #130326 0%, #0b0b22 50%, #001428 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: #d8c8f0;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  header {
+    text-align: center;
+    padding: 18px;
+    border-bottom: 1px solid #7a5aaa33;
+    background: #08001488;
+    flex-shrink: 0;
+  }
+  header h1 {
+    font-size: 28px;
+    letter-spacing: 6px;
+    color: #d8c8f0;
+    text-shadow: 0 0 20px #7a5aaa88;
+    font-weight: 300;
+  }
+  header p { color: #7a5aaa; font-size: 11px; letter-spacing: 2px; margin-top: 3px; }
+
+  .app {
+    display: flex;
+    flex: 1;
+    min-height: 500px;
+    overflow: hidden;
+  }
+
+  /* ── WHEEL PANEL ── */
+  .wheel-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    gap: 20px;
+    position: relative;
+  }
+
+  .wheel-wrapper {
+    position: relative;
+    width: 360px;
+    height: 360px;
+  }
+
+  .wheel-pointer {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 22px solid #7a5aaa;
+    filter: drop-shadow(0 0 5px #7a5aaa88);
+    z-index: 10;
+  }
+
+  #wheel-svg {
+    width: 360px;
+    height: 360px;
+    filter: drop-shadow(0 0 18px #7a5aaa33);
+    transition: transform 0s;
+  }
+
+  #spin-btn {
+    background: linear-gradient(135deg, #5e3a8c, #38206a);
+    border: 2px solid #7a5aaa;
+    color: #d8c8f0;
+    font-size: 16px;
+    letter-spacing: 4px;
+    padding: 12px 48px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 0 14px #7a5aaa44;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  #spin-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .no-skins-msg {
+    font-size: 12px;
+    color: #7a5aaa;
+    letter-spacing: 1px;
+    display: none;
+  }
+
+  /* ── RESULT CARD ── */
+  #result-card {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #130326f0, #0b0b22f0);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    backdrop-filter: blur(6px);
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  #result-card.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+  #result-skin-name {
+    font-size: 20px;
+    letter-spacing: 4px;
+    color: #d8c8f0;
+    text-shadow: 0 0 12px #7a5aaa88;
+    text-align: center;
+    font-weight: 300;
+    text-transform: uppercase;
+  }
+  #result-splash {
+    width: 280px;
+    border-radius: 6px;
+    border: 2px solid #7a5aaa;
+    box-shadow: 0 0 24px #7a5aaa44;
+  }
+  #spin-again-btn {
+    background: transparent;
+    border: 1px solid #7a5aaa;
+    color: #7a5aaa;
+    padding: 8px 28px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    border-left: 1px solid #7a5aaa33;
+    display: flex;
+    flex-direction: column;
+    background: #08001488;
+    flex-shrink: 0;
+  }
+  .sidebar-header {
+    padding: 12px 14px;
+    border-bottom: 1px solid #7a5aaa33;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .sidebar-header span {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #7a5aaa;
+    text-transform: uppercase;
+  }
+  #toggle-all-btn {
+    font-size: 9px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    background: none;
+    border: none;
+    text-transform: uppercase;
+    color: #7a5aaa;
+  }
+  #skin-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  #skin-list::-webkit-scrollbar { width: 4px; }
+  #skin-list::-webkit-scrollbar-track { background: transparent; }
+  #skin-list::-webkit-scrollbar-thumb { background: #7a5aaa33; border-radius: 2px; }
+
+  .skin-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 7px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    background: #16003055;
+    user-select: none;
+  }
+  .skin-item.active {
+    border-color: #7a5aaa44;
+    background: #241050aa;
+    box-shadow: 0 0 5px #7a5aaa18;
+  }
+  .skin-item.inactive { opacity: 0.4; }
+
+  .skin-thumb {
+    width: 36px;
+    height: 36px;
+    border-radius: 3px;
+    object-fit: cover;
+    border: 1px solid #7a5aaa33;
+    background: #130326;
+    flex-shrink: 0;
+  }
+  .skin-label {
+    flex: 1;
+    font-size: 10px;
+    color: #d8c8f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.5px;
+  }
+  .toggle-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #7a5aaa;
+    flex-shrink: 0;
+    box-shadow: 0 0 3px #7a5aaa88;
+    transition: all 0.15s;
+  }
+  .skin-item.inactive .toggle-dot {
+    background: #2e1a50;
+    box-shadow: none;
+  }
+
+  #spin-btn:not(:disabled):hover {
+    background: linear-gradient(135deg, #7a4ab0, #4e2a88);
+    box-shadow: 0 0 20px #7a5aaa66;
+  }
+  #spin-again-btn:hover {
+    background: #7a5aaa18;
+  }
+  #toggle-all-btn:hover {
+    color: #d8c8f0;
+  }
+  .skin-item:hover {
+    border-color: #7a5aaa66;
+    background: #1e0840aa;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>YASPIN</h1>
+  <p>THE UNFORGIVEN • SKIN SELECTOR</p>
+</header>
+
+<div class="app">
+  <div class="wheel-panel">
+    <div class="wheel-wrapper">
+      <div class="wheel-pointer"></div>
+      <svg id="wheel-svg" viewBox="0 0 360 360"></svg>
+    </div>
+    <button id="spin-btn">SPIN</button>
+    <span class="no-skins-msg" id="no-skins-msg">Select at least one skin</span>
+
+    <div id="result-card">
+      <div id="result-skin-name"></div>
+      <img id="result-splash" alt=""/>
+      <button id="spin-again-btn">SPIN AGAIN</button>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <span>My Skins</span>
+      <button id="toggle-all-btn">All / None</button>
+    </div>
+    <div id="skin-list"></div>
+  </div>
+</div>
+
+<script>
+  // Verified nums from DDragon 15.1.1
+  const SKINS = [
+    { num: 0,  name: 'Default Yasuo' },
+    { num: 1,  name: 'High Noon Yasuo' },
+    { num: 2,  name: 'PROJECT: Yasuo' },
+    { num: 3,  name: 'Blood Moon Yasuo' },
+    { num: 9,  name: 'Nightbringer Yasuo' },
+    { num: 10, name: 'Odyssey Yasuo' },
+    { num: 17, name: 'Battle Boss Yasuo' },
+    { num: 18, name: 'True Damage Yasuo' },
+    { num: 35, name: 'Prestige True Damage Yasuo' },
+    { num: 36, name: 'Spirit Blossom Yasuo' },
+    { num: 45, name: 'Sea Dog Yasuo' },
+    { num: 54, name: 'Truth Dragon Yasuo' },
+    { num: 55, name: 'Dream Dragon Yasuo' },
+    { num: 56, name: 'Inkshadow Yasuo' },
+    { num: 57, name: 'Prestige Inkshadow Yasuo' },
+    { num: 68, name: 'Foreseen Yasuo' },
+    { num: 77, name: 'Battle Wolf Yasuo' },
+    { num: 87, name: 'Genesis Nightbringer Yasuo' },
+  ];
+
+  const DDR = 'https://ddragon.leagueoflegends.com/cdn/img/champion';
+  const thumbUrl = num => `${DDR}/loading/Yasuo_${num}.jpg`;
+  const splashUrl = num => `${DDR}/splash/Yasuo_${num}.jpg`;
+
+  const LS_KEY = 'yaspin_enabled_skins';
+
+  function loadEnabled() {
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (raw) return new Set(JSON.parse(raw));
+    } catch (_) {}
+    return new Set(SKINS.map(s => s.num));
+  }
+
+  function saveEnabled(enabledSet) {
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify([...enabledSet]));
+    } catch (_) {}
+  }
+
+  let enabled = loadEnabled();
+  let isSpinning = false;
+  let currentRotation = 0; // tracks cumulative rotation to avoid CSS reset jumps
+
+  const skinList = document.getElementById('skin-list');
+  const spinBtn = document.getElementById('spin-btn');
+  const noSkinsMsg = document.getElementById('no-skins-msg');
+  const wheelSvg = document.getElementById('wheel-svg');
+  const resultCard = document.getElementById('result-card');
+  const resultSkinName = document.getElementById('result-skin-name');
+  const resultSplash = document.getElementById('result-splash');
+
+  // ── SVG HELPERS ──
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs) {
+    const el = document.createElementNS(SVG_NS, tag);
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    return el;
+  }
+
+  function appendWheelDecor(svg, cx, cy, r, innerR) {
+    svg.appendChild(svgEl('circle', { cx, cy, r: r + 3, fill: 'none', stroke: '#7a5aaa33', 'stroke-width': '3' }));
+    svg.appendChild(svgEl('circle', { cx, cy, r: innerR, fill: '#08001a', stroke: '#7a5aaa', 'stroke-width': '2' }));
+    const t = svgEl('text', { x: cx, y: cy, 'text-anchor': 'middle', 'dominant-baseline': 'middle', fill: '#7a5aaa', 'font-size': '8', 'letter-spacing': '1' });
+    t.textContent = 'YASUO';
+    svg.appendChild(t);
+  }
+
+  function renderSidebar() {
+    skinList.innerHTML = '';
+    SKINS.forEach(skin => {
+      const isActive = enabled.has(skin.num);
+      const item = document.createElement('div');
+      item.className = 'skin-item ' + (isActive ? 'active' : 'inactive');
+      item.dataset.num = skin.num;
+      item.innerHTML = `
+        <img class="skin-thumb" src="${thumbUrl(skin.num)}" alt="${skin.name}" loading="lazy"/>
+        <span class="skin-label">${skin.name}</span>
+        <div class="toggle-dot"></div>
+      `;
+      skinList.appendChild(item);
+    });
+  }
+
+  skinList.addEventListener('click', e => {
+    const item = e.target.closest('.skin-item');
+    if (item) toggleSkin(+item.dataset.num);
+  });
+
+  function afterEnabledChange() {
+    saveEnabled(enabled);
+    renderSidebar();
+    if (!isSpinning) renderWheel();
+    updateSpinBtn();
+  }
+
+  function toggleSkin(num) {
+    if (enabled.has(num)) enabled.delete(num);
+    else enabled.add(num);
+    afterEnabledChange();
+  }
+
+  document.getElementById('toggle-all-btn').addEventListener('click', () => {
+    if (enabled.size === SKINS.length) enabled.clear();
+    else SKINS.forEach(s => enabled.add(s.num));
+    afterEnabledChange();
+  });
+
+  function updateSpinBtn() {
+    if (enabled.size === 0) {
+      spinBtn.disabled = true;
+      noSkinsMsg.style.display = 'block';
+    } else {
+      spinBtn.disabled = isSpinning;
+      noSkinsMsg.style.display = 'none';
+    }
+  }
+
+  function renderWheel() {
+    const cx = 180, cy = 180, r = 160, innerR = 28;
+    const activeSkins = SKINS.filter(s => enabled.has(s.num));
+
+    wheelSvg.innerHTML = '';
+
+    if (activeSkins.length === 0) {
+      wheelSvg.appendChild(svgEl('circle', { cx, cy, r, fill: '#130326', stroke: '#7a5aaa', 'stroke-width': '2' }));
+      appendWheelDecor(wheelSvg, cx, cy, r, innerR);
+      return;
+    }
+
+    const segAngle = 360 / activeSkins.length;
+    const fills = ['#241050', '#130326'];
+
+    activeSkins.forEach((skin, i) => {
+      const startAngle = i * segAngle - 90; // -90 so first segment starts at top
+      const endAngle = startAngle + segAngle;
+      const startRad = startAngle * Math.PI / 180;
+      const endRad = endAngle * Math.PI / 180;
+
+      const x1 = cx + r * Math.cos(startRad);
+      const y1 = cy + r * Math.sin(startRad);
+      const x2 = cx + r * Math.cos(endRad);
+      const y2 = cy + r * Math.sin(endRad);
+      const largeArc = segAngle > 180 ? 1 : 0;
+
+      const path = svgEl('path', {
+        d: activeSkins.length === 1
+          ? `M ${cx} ${cy - r} A ${r} ${r} 0 1 1 ${cx - 0.01} ${cy - r} Z`
+          : `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`,
+        fill: fills[i % 2],
+        stroke: '#7a5aaa',
+        'stroke-width': '1.5',
+      });
+      wheelSvg.appendChild(path);
+
+      const midAngle = (startAngle + segAngle / 2) * Math.PI / 180;
+      const labelR = r * 0.65;
+      const lx = cx + labelR * Math.cos(midAngle);
+      const ly = cy + labelR * Math.sin(midAngle);
+      let rotateDeg = startAngle + segAngle / 2 + 90;
+      const normalized = ((rotateDeg % 360) + 360) % 360;
+      if (normalized > 90 && normalized < 270) rotateDeg += 180;
+
+      const label = skin.name.replace(' Yasuo', '').replace(': Yasuo', '').replace('Yasuo', '').replace(':', '').trim();
+      const maxChars = activeSkins.length > 12 ? 10 : activeSkins.length > 8 ? 14 : 18;
+      const text = svgEl('text', {
+        x: lx, y: ly,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'middle',
+        fill: '#d8c8f0',
+        'font-size': activeSkins.length > 8 ? '8' : '9',
+        'letter-spacing': '0.5',
+        transform: `rotate(${rotateDeg}, ${lx}, ${ly})`,
+      });
+      text.textContent = label.length > maxChars ? label.slice(0, maxChars - 1) + '…' : label;
+      wheelSvg.appendChild(text);
+    });
+
+    appendWheelDecor(wheelSvg, cx, cy, r, innerR);
+  }
+
+  renderSidebar();
+  updateSpinBtn();
+  renderWheel();
+
+  function spin() {
+    if (isSpinning) return;
+    const activeSkins = SKINS.filter(s => enabled.has(s.num));
+    if (activeSkins.length === 0) return;
+
+    isSpinning = true;
+    spinBtn.disabled = true;
+
+    const winnerIdx = Math.floor(Math.random() * activeSkins.length);
+    const winner = activeSkins[winnerIdx];
+
+    // Segments start at -90° (top), so segment i's midpoint is i * segAngle + segAngle/2 from top
+    const segAngle = 360 / activeSkins.length;
+    const winnerMidAngle = winnerIdx * segAngle + segAngle / 2;
+    const extraSpins = (5 + Math.floor(Math.random() * 3)) * 360;
+    const currentMod = currentRotation % 360;
+    const degreesToWinner = ((360 - winnerMidAngle - currentMod) + 360) % 360;
+    const targetRotation = currentRotation + extraSpins + degreesToWinner;
+
+    wheelSvg.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 1.0)';
+    wheelSvg.style.transform = `rotate(${targetRotation}deg)`;
+    currentRotation = targetRotation;
+
+    wheelSvg.addEventListener('transitionend', () => {
+      isSpinning = false;
+      showResult(winner);
+    }, { once: true });
+  }
+
+  spinBtn.addEventListener('click', spin);
+
+  function showResult(skin) {
+    resultSkinName.textContent = skin.name.toUpperCase();
+    resultSplash.src = splashUrl(skin.num);
+    resultCard.classList.add('visible');
+  }
+
+  function hideResult() {
+    resultCard.classList.remove('visible');
+    updateSpinBtn();
+  }
+
+  document.getElementById('spin-again-btn').addEventListener('click', hideResult);
+</script>
+
+</body>
+</html>
