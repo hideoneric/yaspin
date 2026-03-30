@@ -431,6 +431,25 @@
     /* pointer floats above the tilted wheel — keep it flat */
     transform: translateX(-50%) rotateX(-52deg);
   }
+  #roulette-ball {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text);
+    box-shadow: 0 0 6px var(--glow), 0 0 2px #fff;
+    top: 50%;
+    left: 50%;
+    margin: -5px 0 0 -5px;
+    transform-origin: 0 0;
+    display: none;
+    z-index: 5;
+    pointer-events: none;
+  }
+  @keyframes rouletteOrbit {
+    from { transform: rotate(0deg) translateX(var(--orbit-r)) rotate(0deg); }
+    to   { transform: rotate(360deg) translateX(var(--orbit-r)) rotate(-360deg); }
+  }
 </style>
 </head>
 <body>
@@ -463,6 +482,7 @@
       <div class="wheel-wrapper">
         <div class="wheel-pointer"></div>
         <svg id="wheel-svg" viewBox="0 0 360 360"></svg>
+        <div id="roulette-ball"></div>
       </div>
     </div>
     <div id="plinko-panel" style="display:none; width:100%; flex:1; min-height:0;">
@@ -869,6 +889,30 @@
     if (trackingRaf) { cancelAnimationFrame(trackingRaf); trackingRaf = null; }
   }
 
+  // ── ROULETTE BALL ──
+  const rouletteBall = document.getElementById('roulette-ball');
+
+  function startRouletteOrbit() {
+    const r = Math.round(wheelSvg.getBoundingClientRect().width * 0.49);
+    rouletteBall.style.setProperty('--orbit-r', `${r}px`);
+    rouletteBall.style.display = 'block';
+    rouletteBall.style.animation = 'none';
+    void rouletteBall.offsetWidth;
+    rouletteBall.style.animation =
+      'rouletteOrbit 0.65s linear 0s 6 forwards, rouletteOrbit 1.7s ease-out 3.9s 1 forwards';
+  }
+
+  function stopRouletteOrbit() {
+    rouletteBall.style.animation = 'none';
+    rouletteBall.style.transition = 'transform 0.3s ease-in';
+    rouletteBall.style.transform = 'rotate(0deg) translateX(60px) rotate(0deg)';
+    setTimeout(() => {
+      rouletteBall.style.display = 'none';
+      rouletteBall.style.transition = '';
+      rouletteBall.style.transform = '';
+    }, 350);
+  }
+
   // ── SPIN ──
   function spin() {
     if (isSpinning) return;
@@ -892,8 +936,10 @@
     currentRotation = target;
 
     startSpinTracking(activeSkins);
+    if (activeMode === 'roulette') startRouletteOrbit();
 
     wheelSvg.addEventListener('transitionend', () => {
+      if (activeMode === 'roulette') stopRouletteOrbit();
       stopSpinTracking();
       isSpinning = false;
       document.querySelectorAll('.mode-tab').forEach(t => t.disabled = false);
