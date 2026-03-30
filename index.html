@@ -402,7 +402,7 @@
   }
   .mode-tab {
     background: none;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-md);
     color: var(--text-dim);
     font-size: 9px;
     letter-spacing: 2px;
@@ -1003,7 +1003,7 @@
       ));
       updatePreview(activeSkins[colIdx]);
 
-      setTimeout(step, wp.pause || 120);
+      setTimeout(step, wp.pause || 0);
     }
 
     step();
