@@ -591,6 +591,7 @@
     });
     // Re-render wheel with new colors
     renderWheel();
+    if (activeMode === 'plinko') renderPlinko();
     // Persist
     try { localStorage.setItem('yaspin_theme', key); } catch(_) {}
   }
