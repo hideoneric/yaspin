@@ -928,6 +928,86 @@
     }));
   }
 
+  function calcPlinkoPath(winnerIdx, numSlots) {
+    const W = 300;
+    const SLOT_H = 70;
+    const PEG_ROWS = 8;
+    const pegStartY = 60;
+    const pegEndY = 500 - SLOT_H - 30;
+    const pegSpacingY = (pegEndY - pegStartY) / (PEG_ROWS - 1);
+    const slotW = W / numSlots;
+    const winnerX = slotW * (winnerIdx + 0.5);
+    const margin = slotW * 0.5;
+
+    const waypoints = [];
+    let x = W / 2;
+
+    for (let row = 0; row < PEG_ROWS; row++) {
+      const remaining = PEG_ROWS - 1 - row;
+      const needed = winnerX - x;
+      const bias = remaining > 0 ? needed / (remaining + 1) : needed;
+      const jitter = (Math.random() - 0.5) * slotW * 0.8;
+      x = Math.max(margin, Math.min(W - margin, x + bias + jitter));
+      const y = pegStartY + row * pegSpacingY;
+      waypoints.push({ x, y, pause: 150 });
+    }
+
+    // Final landing in slot
+    waypoints.push({ x: winnerX, y: 500 - SLOT_H + 10, pause: 0 });
+    return waypoints;
+  }
+
+  function runPlinko(winner) {
+    const activeSkins = SKINS.filter(s => enabled.has(s.num));
+    const winnerIdx = activeSkins.findIndex(s => s.num === winner.num);
+    const numSlots = activeSkins.length;
+    const W = 300;
+
+    renderPlinko(); // ensure fresh board
+
+    const svg = document.getElementById('plinko-svg');
+    const ball = svg.querySelector('#plinko-ball');
+    ball.style.display = '';
+
+    const waypoints = calcPlinkoPath(winnerIdx, numSlots);
+    let wpIdx = 0;
+
+    function step() {
+      if (wpIdx >= waypoints.length) {
+        // Flash winning slot
+        const slot = svg.querySelector(`#plinko-slot-${winnerIdx}`);
+        if (slot) {
+          slot.setAttribute('stroke', themeColor('--accent'));
+          slot.setAttribute('stroke-width', '2');
+          slot.setAttribute('fill', themeColor('--accent') + '44');
+        }
+        setTimeout(() => {
+          ball.style.display = 'none';
+          isSpinning = false;
+          document.querySelectorAll('.mode-tab').forEach(t => t.disabled = false);
+          updateSpinBtn();
+          showResult(winner);
+        }, 400);
+        return;
+      }
+
+      const wp = waypoints[wpIdx++];
+      ball.setAttribute('cx', wp.x);
+      ball.setAttribute('cy', wp.y);
+
+      // Update preview to column the ball is over
+      const colIdx = Math.max(0, Math.min(
+        Math.floor(wp.x / (W / numSlots)),
+        numSlots - 1
+      ));
+      updatePreview(activeSkins[colIdx]);
+
+      setTimeout(step, wp.pause || 120);
+    }
+
+    step();
+  }
+
   applyTheme(activeTheme);
   setMode(activeMode);
   renderSidebar();
@@ -1026,6 +1106,13 @@
 
     const winnerIdx = Math.floor(Math.random() * activeSkins.length);
     const winner    = activeSkins[winnerIdx];
+
+    // ── PLINKO PATH ──
+    if (activeMode === 'plinko') {
+      runPlinko(winner);
+      return;
+    }
+
     const segAngle  = 360 / activeSkins.length;
     const winnerMid = winnerIdx * segAngle + segAngle / 2;
     const extraSpins= (5 + Math.floor(Math.random() * 3)) * 360;
