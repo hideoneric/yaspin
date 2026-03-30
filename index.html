@@ -441,7 +441,7 @@
     top: 50%;
     left: 50%;
     margin: -5px 0 0 -5px;
-    transform-origin: 0 0;
+    transform-origin: 5px 5px;
     display: none;
     z-index: 5;
     pointer-events: none;
@@ -905,7 +905,7 @@
   function stopRouletteOrbit() {
     rouletteBall.style.animation = 'none';
     rouletteBall.style.transition = 'transform 0.3s ease-in';
-    rouletteBall.style.transform = 'rotate(0deg) translateX(60px) rotate(0deg)';
+    rouletteBall.style.transform = 'rotate(0deg) translateX(calc(var(--orbit-r) * 0.4)) rotate(0deg)';
     setTimeout(() => {
       rouletteBall.style.display = 'none';
       rouletteBall.style.transition = '';
