@@ -419,6 +419,18 @@
     color: #fff;
   }
   .mode-tab:disabled { opacity: 0.35; cursor: not-allowed; }
+  /* ── ROULETTE 3D ── */
+  #wheel-roulette-panel.roulette-active {
+    perspective: 500px;
+    perspective-origin: 50% 5%;
+  }
+  #wheel-roulette-panel.roulette-active .wheel-wrapper {
+    transform: rotateX(52deg);
+  }
+  #wheel-roulette-panel.roulette-active .wheel-pointer {
+    /* pointer floats above the tilted wheel — keep it flat */
+    transform: translateX(-50%) rotateX(-52deg);
+  }
 </style>
 </head>
 <body>
