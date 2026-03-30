@@ -7,36 +7,136 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root {
+    --bg-start: #0d0118;
+    --bg-mid:   #08081a;
+    --bg-end:   #000d18;
+    --panel:    #08001288;
+    --border:   #6b4fa028;
+    --border-md:#6b4fa044;
+    --accent:   #6b4fa0;
+    --glow:     #6b4fa055;
+    --text:     #ddd0f5;
+    --text-dim: #6b4fa0;
+    --seg1:     #1a0b38;
+    --seg2:     #0d0118;
+    --hub:      #060010;
+    --btn1:     #4a2878;
+    --btn2:     #2a1050;
+  }
+
   body {
-    background: linear-gradient(135deg, #130326 0%, #0b0b22 50%, #001428 100%);
-    min-height: 100vh;
+    background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-mid) 50%, var(--bg-end) 100%);
+    height: 100vh;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    color: #d8c8f0;
+    color: var(--text);
     display: flex;
     flex-direction: column;
-    overflow: auto;
+    overflow: hidden;
   }
 
+  /* ── HEADER ── */
   header {
-    text-align: center;
-    padding: 18px;
-    border-bottom: 1px solid #7a5aaa33;
-    background: #08001488;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
     flex-shrink: 0;
+    position: relative;
   }
+  .header-title { text-align: center; }
   header h1 {
-    font-size: 28px;
-    letter-spacing: 6px;
-    color: #d8c8f0;
-    text-shadow: 0 0 20px #7a5aaa88;
+    font-size: 22px;
+    letter-spacing: 8px;
+    color: var(--text);
     font-weight: 300;
   }
-  header p { color: #7a5aaa; font-size: 11px; letter-spacing: 2px; margin-top: 3px; }
+  header p {
+    color: var(--text-dim);
+    font-size: 9px;
+    letter-spacing: 3px;
+    margin-top: 2px;
+    text-transform: uppercase;
+  }
 
+  /* Settings gear — top-right of header */
+  #settings-btn {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: 1px solid var(--border-md);
+    border-radius: 6px;
+    color: var(--text-dim);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  #settings-btn:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+  #settings-btn svg { display: block; }
+
+  /* Theme panel */
+  #theme-panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 12px;
+    background: linear-gradient(135deg, var(--bg-start), var(--bg-mid));
+    border: 1px solid var(--border-md);
+    border-radius: 8px;
+    padding: 14px;
+    z-index: 100;
+    min-width: 200px;
+    box-shadow: 0 8px 32px #00000066;
+    display: none;
+  }
+  #theme-panel.open { display: block; }
+  #theme-panel h3 {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .theme-options { display: flex; flex-direction: column; gap: 4px; }
+  .theme-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+  }
+  .theme-opt:hover { background: #ffffff0a; border-color: var(--border-md); }
+  .theme-opt.active { border-color: var(--accent); background: #ffffff08; }
+  .theme-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .theme-opt span {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text);
+  }
+
+  /* ── MAIN LAYOUT ── */
   .app {
     display: flex;
     flex: 1;
-    min-height: 500px;
+    min-height: 0;
     overflow: hidden;
   }
 
@@ -47,60 +147,102 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 24px;
-    gap: 20px;
+    padding: 20px;
+    gap: 16px;
     position: relative;
+    min-width: 0;
   }
 
   .wheel-wrapper {
     position: relative;
-    width: 360px;
-    height: 360px;
+    width: min(58vh, calc(100vw - 280px));
+    height: min(58vh, calc(100vw - 280px));
   }
 
   .wheel-pointer {
     position: absolute;
-    top: -14px;
+    top: -12px;
     left: 50%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 12px solid transparent;
-    border-right: 12px solid transparent;
-    border-top: 22px solid #7a5aaa;
-    filter: drop-shadow(0 0 5px #7a5aaa88);
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 18px solid var(--accent);
     z-index: 10;
+    opacity: 0.9;
   }
 
   #wheel-svg {
-    width: 360px;
-    height: 360px;
-    filter: drop-shadow(0 0 18px #7a5aaa33);
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 2px 20px #00000055);
     transition: transform 0s;
   }
 
+  /* Preview panel */
+  #skin-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 220px;
+    height: 52px;
+    flex-shrink: 0;
+  }
+  #preview-thumb {
+    width: 30px;
+    height: 42px;
+    object-fit: cover;
+    border-radius: 3px;
+    border: 1px solid var(--border-md);
+    background: var(--seg2);
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  #preview-thumb.loaded { opacity: 1; }
+  #preview-name {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #preview-name.active { color: var(--text); }
+
+  /* Spin button */
   #spin-btn {
-    background: linear-gradient(135deg, #5e3a8c, #38206a);
-    border: 2px solid #7a5aaa;
-    color: #d8c8f0;
-    font-size: 16px;
-    letter-spacing: 4px;
-    padding: 12px 48px;
+    background: linear-gradient(135deg, var(--btn1), var(--btn2));
+    border: 1px solid var(--border-md);
+    color: var(--text);
+    font-size: 13px;
+    letter-spacing: 5px;
+    padding: 11px 52px;
     border-radius: 4px;
     cursor: pointer;
-    box-shadow: 0 0 14px #7a5aaa44;
     text-transform: uppercase;
-    font-weight: bold;
+    font-weight: 500;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  #spin-btn:not(:disabled):hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 16px var(--glow);
   }
   #spin-btn:disabled {
-    opacity: 0.4;
+    opacity: 0.35;
     cursor: not-allowed;
-    box-shadow: none;
   }
 
   .no-skins-msg {
-    font-size: 12px;
-    color: #7a5aaa;
+    font-size: 10px;
+    color: var(--text-dim);
     letter-spacing: 1px;
     display: none;
   }
@@ -109,172 +251,201 @@
   #result-card {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, #130326f0, #0b0b22f0);
+    background: linear-gradient(135deg, var(--bg-start)f0, var(--bg-mid)f0);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 16px;
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(8px);
     z-index: 20;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.4s ease;
   }
-  #result-card.visible {
-    opacity: 1;
-    pointer-events: all;
-  }
+  #result-card.visible { opacity: 1; pointer-events: all; }
   #result-skin-name {
-    font-size: 20px;
-    letter-spacing: 4px;
-    color: #d8c8f0;
-    text-shadow: 0 0 12px #7a5aaa88;
+    font-size: 18px;
+    letter-spacing: 5px;
+    color: var(--text);
     text-align: center;
     font-weight: 300;
     text-transform: uppercase;
   }
   #result-splash {
-    width: 280px;
+    width: 260px;
     border-radius: 6px;
-    border: 2px solid #7a5aaa;
-    box-shadow: 0 0 24px #7a5aaa44;
+    border: 1px solid var(--border-md);
+    box-shadow: 0 4px 32px #00000066;
   }
   #spin-again-btn {
     background: transparent;
-    border: 1px solid #7a5aaa;
-    color: #7a5aaa;
+    border: 1px solid var(--border-md);
+    color: var(--text-dim);
     padding: 8px 28px;
-    font-size: 11px;
-    letter-spacing: 2px;
+    font-size: 10px;
+    letter-spacing: 3px;
     cursor: pointer;
     border-radius: 3px;
     text-transform: uppercase;
+    transition: all 0.15s;
   }
+  #spin-again-btn:hover { border-color: var(--accent); color: var(--text); }
 
   /* ── SIDEBAR ── */
   .sidebar {
-    width: 220px;
-    border-left: 1px solid #7a5aaa33;
+    width: 210px;
+    border-left: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    background: #08001488;
+    background: var(--panel);
     flex-shrink: 0;
+    min-height: 0;
   }
   .sidebar-header {
-    padding: 12px 14px;
-    border-bottom: 1px solid #7a5aaa33;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
   }
   .sidebar-header span {
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: #7a5aaa;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
     text-transform: uppercase;
   }
   #toggle-all-btn {
-    font-size: 9px;
+    font-size: 8px;
     cursor: pointer;
     letter-spacing: 1px;
     background: none;
     border: none;
     text-transform: uppercase;
-    color: #7a5aaa;
+    color: var(--text-dim);
+    transition: color 0.15s;
   }
+  #toggle-all-btn:hover { color: var(--text); }
+
   #skin-list {
     flex: 1;
-    overflow-y: auto;
-    padding: 6px;
+    min-height: 0;
+    overflow: hidden;
+    padding: 4px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
   }
-  #skin-list::-webkit-scrollbar { width: 4px; }
-  #skin-list::-webkit-scrollbar-track { background: transparent; }
-  #skin-list::-webkit-scrollbar-thumb { background: #7a5aaa33; border-radius: 2px; }
 
   .skin-item {
+    flex: 1;
+    min-height: 0;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 5px 7px;
+    padding: 0 8px;
     border-radius: 4px;
     cursor: pointer;
     border: 1px solid transparent;
-    transition: all 0.15s;
-    background: #16003055;
+    transition: all 0.12s;
+    background: transparent;
     user-select: none;
+    overflow: hidden;
   }
-  .skin-item.active {
-    border-color: #7a5aaa44;
-    background: #241050aa;
-    box-shadow: 0 0 5px #7a5aaa18;
-  }
-  .skin-item.inactive { opacity: 0.4; }
+  .skin-item.active { border-color: var(--border); background: #ffffff06; }
+  .skin-item.inactive { opacity: 0.38; }
+  .skin-item:hover { background: #ffffff08; border-color: var(--border-md); }
 
   .skin-thumb {
-    width: 36px;
-    height: 36px;
+    width: 24px;
+    height: 24px;
     border-radius: 3px;
     object-fit: cover;
-    border: 1px solid #7a5aaa33;
-    background: #130326;
+    border: 1px solid var(--border);
+    background: var(--seg2);
     flex-shrink: 0;
   }
   .skin-label {
     flex: 1;
-    font-size: 10px;
-    color: #d8c8f0;
+    font-size: 9px;
+    color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
+    min-width: 0;
   }
   .toggle-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: #7a5aaa;
+    background: var(--accent);
     flex-shrink: 0;
-    box-shadow: 0 0 3px #7a5aaa88;
-    transition: all 0.15s;
+    transition: all 0.12s;
   }
-  .skin-item.inactive .toggle-dot {
-    background: #2e1a50;
-    box-shadow: none;
-  }
+  .skin-item.inactive .toggle-dot { background: var(--border-md); }
 
-  #spin-btn:not(:disabled):hover {
-    background: linear-gradient(135deg, #7a4ab0, #4e2a88);
-    box-shadow: 0 0 20px #7a5aaa66;
-  }
-  #spin-again-btn:hover {
-    background: #7a5aaa18;
-  }
-  #toggle-all-btn:hover {
-    color: #d8c8f0;
-  }
-  .skin-item:hover {
-    border-color: #7a5aaa66;
-    background: #1e0840aa;
-  }
+/* ── MODE TABS ── */
+#mode-tabs {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.mode-tab {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 9px;
+  letter-spacing: 2px;
+  padding: 6px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s;
+}
+.mode-tab:hover { border-color: var(--border-md); color: var(--text); }
+.mode-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.mode-tab:disabled { opacity: 0.35; cursor: not-allowed; }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>YASPIN</h1>
-  <p>THE UNFORGIVEN • SKIN SELECTOR</p>
+  <div class="header-title">
+    <h1>YASPIN</h1>
+    <p>The Unforgiven · Skin Selector</p>
+  </div>
+  <button id="settings-btn" title="Change theme">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  </button>
+  <div id="theme-panel">
+    <h3>Theme</h3>
+    <div class="theme-options" id="theme-options"></div>
+  </div>
 </header>
 
 <div class="app">
   <div class="wheel-panel">
+    <div id="mode-tabs">
+      <button class="mode-tab active" data-mode="wheel">Wheel</button>
+      <button class="mode-tab" data-mode="roulette">Roulette</button>
+      <button class="mode-tab" data-mode="plinko">Plinko</button>
+    </div>
     <div class="wheel-wrapper">
       <div class="wheel-pointer"></div>
       <svg id="wheel-svg" viewBox="0 0 360 360"></svg>
+    </div>
+    <div id="skin-preview">
+      <img id="preview-thumb" alt="" />
+      <span id="preview-name">Hover a segment</span>
     </div>
     <button id="spin-btn">SPIN</button>
     <span class="no-skins-msg" id="no-skins-msg">Select at least one skin</span>
@@ -282,13 +453,13 @@
     <div id="result-card">
       <div id="result-skin-name"></div>
       <img id="result-splash" alt=""/>
-      <button id="spin-again-btn">SPIN AGAIN</button>
+      <button id="spin-again-btn">Spin Again</button>
     </div>
   </div>
 
   <div class="sidebar">
     <div class="sidebar-header">
-      <span>My Skins</span>
+      <span>Skins</span>
       <button id="toggle-all-btn">All / None</button>
     </div>
     <div id="skin-list"></div>
@@ -296,7 +467,113 @@
 </div>
 
 <script>
-  // Verified nums from DDragon 15.1.1
+  // ── THEMES ──
+  const THEMES = {
+    void: {
+      name: 'Void', swatch: '#6b4fa0',
+      vars: { '--bg-start':'#0d0118','--bg-mid':'#08081a','--bg-end':'#000d18',
+               '--panel':'#08001288','--border':'#6b4fa028','--border-md':'#6b4fa044',
+               '--accent':'#6b4fa0','--glow':'#6b4fa044','--text':'#ddd0f5',
+               '--text-dim':'#6b4fa0','--seg1':'#1a0b38','--seg2':'#0d0118',
+               '--hub':'#060010','--btn1':'#4a2878','--btn2':'#2a1050' },
+    },
+    bloodmoon: {
+      name: 'Blood Moon', swatch: '#c02040',
+      vars: { '--bg-start':'#110005','--bg-mid':'#0d0208','--bg-end':'#0a0005',
+               '--panel':'#0d000588','--border':'#c0204028','--border-md':'#c0204044',
+               '--accent':'#c02040','--glow':'#c0204044','--text':'#f5d0d8',
+               '--text-dim':'#c02040','--seg1':'#2a0510','--seg2':'#110005',
+               '--hub':'#080003','--btn1':'#7a1428','--btn2':'#3a0810' },
+    },
+    highnoon: {
+      name: 'High Noon', swatch: '#c8922a',
+      vars: { '--bg-start':'#100d00','--bg-mid':'#0c0a02','--bg-end':'#0a0800',
+               '--panel':'#0d0a0088','--border':'#c8922a28','--border-md':'#c8922a44',
+               '--accent':'#c8922a','--glow':'#c8922a44','--text':'#f5e8c0',
+               '--text-dim':'#c8922a','--seg1':'#2a1e06','--seg2':'#100d00',
+               '--hub':'#080600','--btn1':'#7a5818','--btn2':'#3a2808' },
+    },
+    project: {
+      name: 'PROJECT', swatch: '#00b4cc',
+      vars: { '--bg-start':'#001518','--bg-mid':'#00080d','--bg-end':'#000c10',
+               '--panel':'#00101488','--border':'#00b4cc28','--border-md':'#00b4cc44',
+               '--accent':'#00b4cc','--glow':'#00b4cc44','--text':'#c0f0f8',
+               '--text-dim':'#00b4cc','--seg1':'#041e24','--seg2':'#001518',
+               '--hub':'#000b0e','--btn1':'#007888','--btn2':'#003840' },
+    },
+    spiritblossom: {
+      name: 'Spirit Blossom', swatch: '#cc4a8a',
+      vars: { '--bg-start':'#100414','--bg-mid':'#0a020e','--bg-end':'#0d0010',
+               '--panel':'#0d001488','--border':'#cc4a8a28','--border-md':'#cc4a8a44',
+               '--accent':'#cc4a8a','--glow':'#cc4a8a44','--text':'#f5c8e8',
+               '--text-dim':'#cc4a8a','--seg1':'#280a20','--seg2':'#100414',
+               '--hub':'#080010','--btn1':'#882060','--btn2':'#440030' },
+    },
+    odyssey: {
+      name: 'Odyssey', swatch: '#2255cc',
+      vars: { '--bg-start':'#000d1c','--bg-mid':'#000810','--bg-end':'#000a14',
+               '--panel':'#00081488','--border':'#2255cc28','--border-md':'#2255cc44',
+               '--accent':'#2255cc','--glow':'#2255cc44','--text':'#c0d0f8',
+               '--text-dim':'#2255cc','--seg1':'#060f2a','--seg2':'#000d1c',
+               '--hub':'#00060f','--btn1':'#183888','--btn2':'#0c1c44' },
+    },
+  };
+
+  let activeTheme = 'void';
+
+  function applyTheme(key) {
+    const theme = THEMES[key];
+    if (!theme) return;
+    activeTheme = key;
+    const root = document.documentElement;
+    for (const [k, v] of Object.entries(theme.vars)) root.style.setProperty(k, v);
+    // Update active state in panel
+    document.querySelectorAll('.theme-opt').forEach(el => {
+      el.classList.toggle('active', el.dataset.theme === key);
+    });
+    // Re-render wheel with new colors
+    renderWheel();
+    // Persist
+    try { localStorage.setItem('yaspin_theme', key); } catch(_) {}
+  }
+
+  // Build theme panel options
+  const themeOptionsEl = document.getElementById('theme-options');
+  for (const [key, theme] of Object.entries(THEMES)) {
+    const opt = document.createElement('div');
+    opt.className = 'theme-opt';
+    opt.dataset.theme = key;
+    opt.innerHTML = `<div class="theme-swatch" style="background:${theme.swatch}"></div><span>${theme.name}</span>`;
+    opt.addEventListener('click', () => { applyTheme(key); });
+    themeOptionsEl.appendChild(opt);
+  }
+
+  // Settings gear toggle
+  const settingsBtn = document.getElementById('settings-btn');
+  const themePanel  = document.getElementById('theme-panel');
+  settingsBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    themePanel.classList.toggle('open');
+  });
+  document.addEventListener('click', () => themePanel.classList.remove('open'));
+  themePanel.addEventListener('click', e => e.stopPropagation());
+
+  // Load saved theme preference (apply later, after DOM refs are ready)
+  try {
+    const saved = localStorage.getItem('yaspin_theme');
+    if (saved && THEMES[saved]) activeTheme = saved;
+  } catch(_) {}
+  // Apply CSS vars immediately (no renderWheel yet — wheel DOM not ready)
+  (function applyCssVarsOnly(key) {
+    const theme = THEMES[key];
+    if (!theme) return;
+    const root = document.documentElement;
+    for (const [k, v] of Object.entries(theme.vars)) root.style.setProperty(k, v);
+    document.querySelectorAll('.theme-opt').forEach(el =>
+      el.classList.toggle('active', el.dataset.theme === key));
+  })(activeTheme);
+
+  // ── SKINS ──
   const SKINS = [
     { num: 0,  name: 'Default Yasuo' },
     { num: 1,  name: 'High Noon Yasuo' },
@@ -318,37 +595,30 @@
     { num: 87, name: 'Genesis Nightbringer Yasuo' },
   ];
 
-  const DDR = 'https://ddragon.leagueoflegends.com/cdn/img/champion';
+  const DDR      = 'https://ddragon.leagueoflegends.com/cdn/img/champion';
   const thumbUrl = num => `${DDR}/loading/Yasuo_${num}.jpg`;
-  const splashUrl = num => `${DDR}/splash/Yasuo_${num}.jpg`;
-
-  const LS_KEY = 'yaspin_enabled_skins';
+  const splashUrl= num => `${DDR}/splash/Yasuo_${num}.jpg`;
+  const LS_KEY   = 'yaspin_enabled_skins';
 
   function loadEnabled() {
-    try {
-      const raw = localStorage.getItem(LS_KEY);
-      if (raw) return new Set(JSON.parse(raw));
-    } catch (_) {}
+    try { const r = localStorage.getItem(LS_KEY); if (r) return new Set(JSON.parse(r)); } catch(_) {}
     return new Set(SKINS.map(s => s.num));
   }
-
-  function saveEnabled(enabledSet) {
-    try {
-      localStorage.setItem(LS_KEY, JSON.stringify([...enabledSet]));
-    } catch (_) {}
+  function saveEnabled(s) {
+    try { localStorage.setItem(LS_KEY, JSON.stringify([...s])); } catch(_) {}
   }
 
   let enabled = loadEnabled();
   let isSpinning = false;
-  let currentRotation = 0; // tracks cumulative rotation to avoid CSS reset jumps
+  let currentRotation = 0;
 
-  const skinList = document.getElementById('skin-list');
-  const spinBtn = document.getElementById('spin-btn');
-  const noSkinsMsg = document.getElementById('no-skins-msg');
-  const wheelSvg = document.getElementById('wheel-svg');
-  const resultCard = document.getElementById('result-card');
-  const resultSkinName = document.getElementById('result-skin-name');
-  const resultSplash = document.getElementById('result-splash');
+  const skinList      = document.getElementById('skin-list');
+  const spinBtn       = document.getElementById('spin-btn');
+  const noSkinsMsg    = document.getElementById('no-skins-msg');
+  const wheelSvg      = document.getElementById('wheel-svg');
+  const resultCard    = document.getElementById('result-card');
+  const resultSkinName= document.getElementById('result-skin-name');
+  const resultSplash  = document.getElementById('result-splash');
 
   // ── SVG HELPERS ──
   const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -358,10 +628,15 @@
     return el;
   }
 
+  function themeColor(varName) {
+    return THEMES[activeTheme].vars[varName] || '#888';
+  }
+
   function appendWheelDecor(svg, cx, cy, r, innerR) {
-    svg.appendChild(svgEl('circle', { cx, cy, r: r + 3, fill: 'none', stroke: '#7a5aaa33', 'stroke-width': '3' }));
-    svg.appendChild(svgEl('circle', { cx, cy, r: innerR, fill: '#08001a', stroke: '#7a5aaa', 'stroke-width': '2' }));
-    const t = svgEl('text', { x: cx, y: cy, 'text-anchor': 'middle', 'dominant-baseline': 'middle', fill: '#7a5aaa', 'font-size': '8', 'letter-spacing': '1' });
+    svg.appendChild(svgEl('circle', { cx, cy, r: r + 2, fill: 'none', stroke: themeColor('--border'), 'stroke-width': '2' }));
+    svg.appendChild(svgEl('circle', { cx, cy, r: innerR, fill: themeColor('--hub'), stroke: themeColor('--border-md'), 'stroke-width': '1.5' }));
+    const t = svgEl('text', { x: cx, y: cy, 'text-anchor': 'middle', 'dominant-baseline': 'middle',
+      fill: themeColor('--text-dim'), 'font-size': '7', 'letter-spacing': '1.5', 'font-family': 'Segoe UI, system-ui, sans-serif' });
     t.textContent = 'YASUO';
     svg.appendChild(t);
   }
@@ -395,8 +670,7 @@
   }
 
   function toggleSkin(num) {
-    if (enabled.has(num)) enabled.delete(num);
-    else enabled.add(num);
+    if (enabled.has(num)) enabled.delete(num); else enabled.add(num);
     afterEnabledChange();
   }
 
@@ -419,94 +693,151 @@
   function renderWheel() {
     const cx = 180, cy = 180, r = 160, innerR = 28;
     const activeSkins = SKINS.filter(s => enabled.has(s.num));
-
     wheelSvg.innerHTML = '';
 
     if (activeSkins.length === 0) {
-      wheelSvg.appendChild(svgEl('circle', { cx, cy, r, fill: '#130326', stroke: '#7a5aaa', 'stroke-width': '2' }));
+      wheelSvg.appendChild(svgEl('circle', { cx, cy, r, fill: themeColor('--seg2'), stroke: themeColor('--border-md'), 'stroke-width': '1.5' }));
       appendWheelDecor(wheelSvg, cx, cy, r, innerR);
       return;
     }
 
     const segAngle = 360 / activeSkins.length;
-    const fills = ['#241050', '#130326'];
+    const br = r * 0.10; // badge radius
+
+    const defs = svgEl('defs', {});
+    wheelSvg.appendChild(defs);
 
     activeSkins.forEach((skin, i) => {
-      const startAngle = i * segAngle - 90; // -90 so first segment starts at top
-      const endAngle = startAngle + segAngle;
-      const startRad = startAngle * Math.PI / 180;
-      const endRad = endAngle * Math.PI / 180;
+      const startAngle = i * segAngle - 90;
+      const endAngle   = startAngle + segAngle;
+      const startRad   = startAngle * Math.PI / 180;
+      const endRad     = endAngle   * Math.PI / 180;
 
-      const x1 = cx + r * Math.cos(startRad);
-      const y1 = cy + r * Math.sin(startRad);
-      const x2 = cx + r * Math.cos(endRad);
-      const y2 = cy + r * Math.sin(endRad);
+      const x1 = cx + r * Math.cos(startRad), y1 = cy + r * Math.sin(startRad);
+      const x2 = cx + r * Math.cos(endRad),   y2 = cy + r * Math.sin(endRad);
       const largeArc = segAngle > 180 ? 1 : 0;
 
-      const path = svgEl('path', {
+      wheelSvg.appendChild(svgEl('path', {
         d: activeSkins.length === 1
           ? `M ${cx} ${cy - r} A ${r} ${r} 0 1 1 ${cx - 0.01} ${cy - r} Z`
           : `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`,
-        fill: fills[i % 2],
-        stroke: '#7a5aaa',
-        'stroke-width': '1.5',
-      });
-      wheelSvg.appendChild(path);
+        fill: i % 2 === 0 ? themeColor('--seg1') : themeColor('--seg2'),
+        stroke: themeColor('--border'),
+        'stroke-width': '1',
+      }));
 
+      // Thumbnail badge
       const midAngle = (startAngle + segAngle / 2) * Math.PI / 180;
-      const labelR = r * 0.65;
-      const lx = cx + labelR * Math.cos(midAngle);
-      const ly = cy + labelR * Math.sin(midAngle);
-      let rotateDeg = startAngle + segAngle / 2 + 90;
-      const normalized = ((rotateDeg % 360) + 360) % 360;
-      if (normalized > 90 && normalized < 270) rotateDeg += 180;
+      const bx = cx + r * 0.68 * Math.cos(midAngle);
+      const by = cy + r * 0.68 * Math.sin(midAngle);
+      const clipId = `tc-${i}`;
+      const cp = svgEl('clipPath', { id: clipId });
+      cp.appendChild(svgEl('circle', { cx: bx, cy: by, r: br }));
+      defs.appendChild(cp);
 
-      const label = skin.name.replace(' Yasuo', '').replace(': Yasuo', '').replace('Yasuo', '').replace(':', '').trim();
-      const maxChars = activeSkins.length > 12 ? 10 : activeSkins.length > 8 ? 14 : 18;
-      const text = svgEl('text', {
-        x: lx, y: ly,
-        'text-anchor': 'middle',
-        'dominant-baseline': 'middle',
-        fill: '#d8c8f0',
-        'font-size': activeSkins.length > 8 ? '8' : '9',
-        'letter-spacing': '0.5',
-        transform: `rotate(${rotateDeg}, ${lx}, ${ly})`,
-      });
-      text.textContent = label.length > maxChars ? label.slice(0, maxChars - 1) + '…' : label;
-      wheelSvg.appendChild(text);
+      wheelSvg.appendChild(svgEl('image', {
+        href: thumbUrl(skin.num),
+        x: bx - br, y: by - br * 2.5,
+        width: br * 2, height: br * 5,
+        'clip-path': `url(#${clipId})`,
+        preserveAspectRatio: 'xMidYMin slice',
+      }));
+
+      wheelSvg.appendChild(svgEl('circle', {
+        cx: bx, cy: by, r: br,
+        fill: 'none', stroke: themeColor('--border-md'), 'stroke-width': '1',
+      }));
     });
 
     appendWheelDecor(wheelSvg, cx, cy, r, innerR);
   }
 
+  applyTheme(activeTheme);
   renderSidebar();
   updateSpinBtn();
-  renderWheel();
 
+  // ── PREVIEW PANEL ──
+  const previewThumb = document.getElementById('preview-thumb');
+  const previewName  = document.getElementById('preview-name');
+
+  function updatePreview(skin) {
+    if (!skin) {
+      previewName.textContent = 'Hover a segment';
+      previewName.classList.remove('active');
+      previewThumb.classList.remove('loaded');
+      return;
+    }
+    previewThumb.src = thumbUrl(skin.num);
+    previewThumb.onload = () => previewThumb.classList.add('loaded');
+    previewName.textContent = skin.name;
+    previewName.classList.add('active');
+  }
+
+  function angleToSkinIndex(angleDeg, skins) {
+    const seg = 360 / skins.length;
+    return Math.floor(((angleDeg + 90) % 360 + 360) % 360 / seg) % skins.length;
+  }
+
+  wheelSvg.addEventListener('mousemove', e => {
+    if (isSpinning) return;
+    const activeSkins = SKINS.filter(s => enabled.has(s.num));
+    if (!activeSkins.length) return;
+    const rect = wheelSvg.getBoundingClientRect();
+    const dx = e.clientX - (rect.left + rect.width / 2);
+    const dy = e.clientY - (rect.top  + rect.height / 2);
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < rect.width * 0.08 || dist > rect.width * 0.5) { updatePreview(null); return; }
+    updatePreview(activeSkins[angleToSkinIndex(Math.atan2(dy, dx) * 180 / Math.PI - currentRotation, activeSkins)]);
+  });
+
+  wheelSvg.addEventListener('mouseleave', () => { if (!isSpinning) updatePreview(null); });
+
+  // ── LIVE SPIN TRACKING ──
+  let trackingRaf = null;
+
+  function startSpinTracking(activeSkins) {
+    function tick() {
+      const m = window.getComputedStyle(wheelSvg).transform;
+      const v = m.match(/matrix\(([^)]+)\)/);
+      if (v) {
+        const p = v[1].split(',').map(Number);
+        const deg = Math.atan2(p[1], p[0]) * 180 / Math.PI;
+        updatePreview(activeSkins[angleToSkinIndex(-90 - deg, activeSkins)]);
+      }
+      trackingRaf = requestAnimationFrame(tick);
+    }
+    trackingRaf = requestAnimationFrame(tick);
+  }
+
+  function stopSpinTracking() {
+    if (trackingRaf) { cancelAnimationFrame(trackingRaf); trackingRaf = null; }
+  }
+
+  // ── SPIN ──
   function spin() {
     if (isSpinning) return;
     const activeSkins = SKINS.filter(s => enabled.has(s.num));
-    if (activeSkins.length === 0) return;
+    if (!activeSkins.length) return;
 
     isSpinning = true;
     spinBtn.disabled = true;
 
     const winnerIdx = Math.floor(Math.random() * activeSkins.length);
-    const winner = activeSkins[winnerIdx];
-
-    // Segments start at -90° (top), so segment i's midpoint is i * segAngle + segAngle/2 from top
-    const segAngle = 360 / activeSkins.length;
-    const winnerMidAngle = winnerIdx * segAngle + segAngle / 2;
-    const extraSpins = (5 + Math.floor(Math.random() * 3)) * 360;
-    const currentMod = currentRotation % 360;
-    const degreesToWinner = ((360 - winnerMidAngle - currentMod) + 360) % 360;
-    const targetRotation = currentRotation + extraSpins + degreesToWinner;
+    const winner    = activeSkins[winnerIdx];
+    const segAngle  = 360 / activeSkins.length;
+    const winnerMid = winnerIdx * segAngle + segAngle / 2;
+    const extraSpins= (5 + Math.floor(Math.random() * 3)) * 360;
+    const toWinner  = ((360 - winnerMid - currentRotation % 360) + 360) % 360;
+    const target    = currentRotation + extraSpins + toWinner;
 
     wheelSvg.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 1.0)';
-    wheelSvg.style.transform = `rotate(${targetRotation}deg)`;
-    currentRotation = targetRotation;
+    wheelSvg.style.transform  = `rotate(${target}deg)`;
+    currentRotation = target;
+
+    startSpinTracking(activeSkins);
 
     wheelSvg.addEventListener('transitionend', () => {
+      stopSpinTracking();
       isSpinning = false;
       showResult(winner);
     }, { once: true });
@@ -515,7 +846,7 @@
   spinBtn.addEventListener('click', spin);
 
   function showResult(skin) {
-    resultSkinName.textContent = skin.name.toUpperCase();
+    resultSkinName.textContent = skin.name;
     resultSplash.src = splashUrl(skin.num);
     resultCard.classList.add('visible');
   }
