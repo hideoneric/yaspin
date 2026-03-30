@@ -450,6 +450,18 @@
     from { transform: rotate(0deg) translateX(var(--orbit-r)) rotate(0deg); }
     to   { transform: rotate(360deg) translateX(var(--orbit-r)) rotate(-360deg); }
   }
+
+  /* ── PLINKO ── */
+  #plinko-panel {
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-height: 0;
+  }
+  #plinko-svg {
+    max-height: 100%;
+    max-width: 100%;
+  }
 </style>
 </head>
 <body>
@@ -635,7 +647,7 @@
     document.getElementById('plinko-panel').style.display =
       mode === 'plinko' ? 'flex' : 'none';
 
-    if (mode === 'plinko') { if (typeof renderPlinko === 'function') renderPlinko(); }
+    if (mode === 'plinko') renderPlinko();
     else renderWheel();
 
     // Roulette tilt
@@ -741,6 +753,7 @@
     saveEnabled(enabled);
     renderSidebar();
     if (!isSpinning) renderWheel();
+    if (!isSpinning && activeMode === 'plinko') renderPlinko();
     updateSpinBtn();
   }
 
@@ -825,6 +838,94 @@
     });
 
     appendWheelDecor(wheelSvg, cx, cy, r, innerR);
+  }
+
+  function renderPlinko() {
+    const svg = document.getElementById('plinko-svg');
+    svg.innerHTML = '';
+    const activeSkins = SKINS.filter(s => enabled.has(s.num));
+    if (!activeSkins.length) return;
+
+    const W = 300, H = 500;
+    const SLOT_H = 70;
+    const PEG_ROWS = 8, PEG_COLS = 7;
+    const pegStartY = 60, pegEndY = H - SLOT_H - 30;
+    const pegSpacingY = (pegEndY - pegStartY) / (PEG_ROWS - 1);
+    const pegSpacingX = W / (PEG_COLS + 1);
+    const slotW = W / activeSkins.length;
+    const acc = themeColor('--accent');
+    const seg1 = themeColor('--seg1');
+    const seg2 = themeColor('--seg2');
+    const borderMd = themeColor('--border-md');
+    const textColor = themeColor('--text');
+
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    function el(tag, attrs) {
+      const e = document.createElementNS(SVG_NS, tag);
+      for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+      return e;
+    }
+
+    // defs block first (clipPaths added below)
+    const defs = document.createElementNS(SVG_NS, 'defs');
+    svg.appendChild(defs);
+
+    // Board background
+    svg.appendChild(el('rect', { x:0, y:0, width:W, height:H, fill:seg2, rx:6 }));
+
+    // Drop chute at top center
+    svg.appendChild(el('rect', { x: W/2-10, y:4, width:20, height:16, rx:3,
+      fill: seg1, stroke: acc, 'stroke-width':'1' }));
+    // Arrow down
+    const arrow = document.createElementNS(SVG_NS, 'polygon');
+    arrow.setAttribute('points', `${W/2-5},20 ${W/2+5},20 ${W/2},28`);
+    arrow.setAttribute('fill', acc);
+    svg.appendChild(arrow);
+
+    // Pegs (staggered)
+    for (let row = 0; row < PEG_ROWS; row++) {
+      const cols = row % 2 === 0 ? PEG_COLS : PEG_COLS - 1;
+      const offsetX = row % 2 === 0 ? pegSpacingX : pegSpacingX * 1.5;
+      const y = pegStartY + row * pegSpacingY;
+      for (let col = 0; col < cols; col++) {
+        const x = offsetX + col * pegSpacingX;
+        svg.appendChild(el('circle', { cx: x, cy: y, r: 4,
+          fill: acc, opacity: '0.85' }));
+      }
+    }
+
+    // Slots at bottom
+    const slotY = H - SLOT_H;
+    activeSkins.forEach((skin, i) => {
+      const x = i * slotW;
+      const fill = i % 2 === 0 ? seg1 : seg2;
+      svg.appendChild(el('rect', {
+        id: `plinko-slot-${i}`,
+        x, y: slotY, width: slotW, height: SLOT_H,
+        fill, stroke: borderMd, 'stroke-width': '0.5', rx: 2,
+      }));
+      // Thumbnail clipped to slot
+      const clipId = `pslot-clip-${i}`;
+      const cp = el('clipPath', { id: clipId });
+      cp.appendChild(el('rect', { x, y: slotY + 2, width: slotW, height: SLOT_H - 2, rx: 2 }));
+      defs.appendChild(cp);
+      svg.appendChild(el('image', {
+        href: thumbUrl(skin.num),
+        x, y: slotY + 2,
+        width: slotW, height: SLOT_H - 2,
+        preserveAspectRatio: 'xMidYMid slice',
+        'clip-path': `url(#${clipId})`,
+        opacity: '0.55',
+      }));
+    });
+
+    // Plinko ball (hidden initially)
+    svg.appendChild(el('circle', {
+      id: 'plinko-ball',
+      cx: W/2, cy: 20, r: 7,
+      fill: textColor, opacity: '0.95',
+      style: 'display:none',
+    }));
   }
 
   applyTheme(activeTheme);
