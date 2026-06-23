@@ -1,0 +1,165 @@
+<h2>How should the wheel look?</h2>
+<p class="subtitle">Three directions for improving readability and visual richness. Click one to select.</p>
+
+<div class="cards">
+
+  <!-- Option A -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0b0b22;padding:16px;display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 240 240" width="200" height="200" style="filter:drop-shadow(0 0 12px #7a5aaa55)">
+        <!-- Wheel segments with text OUTSIDE -->
+        <defs>
+          <clipPath id="ca"><circle cx="120" cy="120" r="108"/></clipPath>
+        </defs>
+        <!-- segments -->
+        <g>
+          <path d="M120 120 L120 12 A108 108 0 0 1 207 66 Z" fill="#241050" stroke="#7a5aaa" stroke-width="1"/>
+          <path d="M120 120 L207 66 A108 108 0 0 1 228 120 Z" fill="#130326" stroke="#7a5aaa" stroke-width="1"/>
+          <path d="M120 120 L228 120 A108 108 0 0 1 207 174 Z" fill="#241050" stroke="#7a5aaa" stroke-width="1"/>
+          <path d="M120 120 L207 174 A108 108 0 0 1 166 219 Z" fill="#130326" stroke="#7a5aaa" stroke-width="1"/>
+          <path d="M120 120 L166 219 A108 108 0 0 1 74 219 Z" fill="#241050" stroke="#7a5aaa" stroke-width="1"/>
+          <path d="M120 120 L74 219 A108 108 0 0 1 33 174 Z" fill="#130326" stroke="#7a5aaa" stroke-width="1"/>
+          <path d="M120 120 L33 174 A108 108 0 0 1 12 120 Z" fill="#241050" stroke="#7a5aaa" stroke-width="1"/>
+          <path d="M120 120 L12 120 A108 108 0 0 1 33 66 Z" fill="#130326" stroke="#7a5aaa" stroke-width="1"/>
+          <path d="M120 120 L33 66 A108 108 0 0 1 120 12 Z" fill="#241050" stroke="#7a5aaa" stroke-width="1"/>
+        </g>
+        <!-- Outer ring with name labels -->
+        <circle cx="120" cy="120" r="111" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <!-- Outer label band -->
+        <circle cx="120" cy="120" r="130" fill="none" stroke="#7a5aaa44" stroke-width="18"/>
+        <!-- Sample label text outside -->
+        <text x="120" y="9" text-anchor="middle" fill="#d8c8f0" font-size="7" letter-spacing="0.5">HIGH NOON</text>
+        <text x="211" y="76" text-anchor="middle" fill="#d8c8f0" font-size="7" letter-spacing="0.5" transform="rotate(40,211,76)">PROJECT</text>
+        <text x="230" y="130" text-anchor="middle" fill="#d8c8f0" font-size="7" letter-spacing="0.5" transform="rotate(80,230,130)">BLOOD MOON</text>
+        <!-- Hub -->
+        <circle cx="120" cy="120" r="22" fill="#08001a" stroke="#7a5aaa" stroke-width="1.5"/>
+        <text x="120" y="123" text-anchor="middle" fill="#7a5aaa" font-size="6" letter-spacing="1">YASUO</text>
+        <!-- Pointer -->
+        <polygon points="120,0 114,14 126,14" fill="#7a5aaa"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <h3>A — Bigger Wheel + Labels Outside</h3>
+      <p>Larger wheel (~500px), names moved to an outer ring so they're always readable — no more cramped rotated text inside tiny segments. Clean and legible.</p>
+    </div>
+  </div>
+
+  <!-- Option B -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0b0b22;padding:16px;display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 240 240" width="200" height="200" style="filter:drop-shadow(0 0 12px #7a5aaa55)">
+        <defs>
+          <clipPath id="seg1c"><path d="M120 120 L120 12 A108 108 0 0 1 207 66 Z"/></clipPath>
+          <clipPath id="seg2c"><path d="M120 120 L207 66 A108 108 0 0 1 228 120 Z"/></clipPath>
+          <clipPath id="seg3c"><path d="M120 120 L228 120 A108 108 0 0 1 207 174 Z"/></clipPath>
+          <clipPath id="seg4c"><path d="M120 120 L207 174 A108 108 0 0 1 166 219 Z"/></clipPath>
+          <clipPath id="seg5c"><path d="M120 120 L166 219 A108 108 0 0 1 74 219 Z"/></clipPath>
+          <clipPath id="seg6c"><path d="M120 120 L74 219 A108 108 0 0 1 33 174 Z"/></clipPath>
+          <clipPath id="seg7c"><path d="M120 120 L33 174 A108 108 0 0 1 12 120 Z"/></clipPath>
+          <clipPath id="seg8c"><path d="M120 120 L12 120 A108 108 0 0 1 33 66 Z"/></clipPath>
+          <clipPath id="seg9c"><path d="M120 120 L33 66 A108 108 0 0 1 120 12 Z"/></clipPath>
+        </defs>
+        <!-- Skin art fills each segment -->
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_1.jpg" x="40" y="12" width="160" height="108" clip-path="url(#seg1c)" preserveAspectRatio="xMidYMid slice" opacity="0.8"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_2.jpg" x="120" y="40" width="108" height="108" clip-path="url(#seg2c)" preserveAspectRatio="xMidYMid slice" opacity="0.8"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_3.jpg" x="120" y="80" width="108" height="108" clip-path="url(#seg3c)" preserveAspectRatio="xMidYMid slice" opacity="0.8"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_9.jpg" x="80" y="120" width="108" height="108" clip-path="url(#seg4c)" preserveAspectRatio="xMidYMid slice" opacity="0.8"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_10.jpg" x="40" y="120" width="160" height="108" clip-path="url(#seg5c)" preserveAspectRatio="xMidYMid slice" opacity="0.8"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_17.jpg" x="12" y="80" width="108" height="108" clip-path="url(#seg6c)" preserveAspectRatio="xMidYMid slice" opacity="0.8"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_18.jpg" x="12" y="40" width="108" height="108" clip-path="url(#seg7c)" preserveAspectRatio="xMidYMid slice" opacity="0.8"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_35.jpg" x="12" y="12" width="108" height="160" clip-path="url(#seg8c)" preserveAspectRatio="xMidYMid slice" opacity="0.8"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_36.jpg" x="40" y="12" width="160" height="108" clip-path="url(#seg9c)" preserveAspectRatio="xMidYMid slice" opacity="0.8"/>
+        <!-- Segment strokes on top -->
+        <path d="M120 120 L120 12 A108 108 0 0 1 207 66 Z" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <path d="M120 120 L207 66 A108 108 0 0 1 228 120 Z" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <path d="M120 120 L228 120 A108 108 0 0 1 207 174 Z" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <path d="M120 120 L207 174 A108 108 0 0 1 166 219 Z" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <path d="M120 120 L166 219 A108 108 0 0 1 74 219 Z" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <path d="M120 120 L74 219 A108 108 0 0 1 33 174 Z" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <path d="M120 120 L33 174 A108 108 0 0 1 12 120 Z" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <path d="M120 120 L12 120 A108 108 0 0 1 33 66 Z" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <path d="M120 120 L33 66 A108 108 0 0 1 120 12 Z" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <!-- Outer border -->
+        <circle cx="120" cy="120" r="108" fill="none" stroke="#7a5aaa" stroke-width="2"/>
+        <!-- Hub -->
+        <circle cx="120" cy="120" r="22" fill="#08001a" stroke="#7a5aaa" stroke-width="1.5"/>
+        <text x="120" y="123" text-anchor="middle" fill="#7a5aaa" font-size="6" letter-spacing="1">YASUO</text>
+        <!-- Pointer -->
+        <polygon points="120,0 114,14 126,14" fill="#7a5aaa"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <h3>B — Skin Art Fills Segments</h3>
+      <p>Each segment is filled with the actual skin's loading art (from DDragon CDN). No text on wheel — hover a segment to see the name. Most visually striking option.</p>
+    </div>
+  </div>
+
+  <!-- Option C -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0b0b22;padding:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px">
+      <svg viewBox="0 0 240 240" width="180" height="180" style="filter:drop-shadow(0 0 12px #7a5aaa55)">
+        <!-- Segments with thumbnail circles -->
+        <path d="M120 120 L120 12 A108 108 0 0 1 207 66 Z" fill="#241050" stroke="#7a5aaa" stroke-width="1"/>
+        <path d="M120 120 L207 66 A108 108 0 0 1 228 120 Z" fill="#130326" stroke="#7a5aaa" stroke-width="1"/>
+        <path d="M120 120 L228 120 A108 108 0 0 1 207 174 Z" fill="#241050" stroke="#7a5aaa" stroke-width="1"/>
+        <path d="M120 120 L207 174 A108 108 0 0 1 166 219 Z" fill="#130326" stroke="#7a5aaa" stroke-width="1"/>
+        <path d="M120 120 L166 219 A108 108 0 0 1 74 219 Z" fill="#241050" stroke="#7a5aaa" stroke-width="1"/>
+        <path d="M120 120 L74 219 A108 108 0 0 1 33 174 Z" fill="#130326" stroke="#7a5aaa" stroke-width="1"/>
+        <path d="M120 120 L33 174 A108 108 0 0 1 12 120 Z" fill="#241050" stroke="#7a5aaa" stroke-width="1"/>
+        <path d="M120 120 L12 120 A108 108 0 0 1 33 66 Z" fill="#130326" stroke="#7a5aaa" stroke-width="1"/>
+        <path d="M120 120 L33 66 A108 108 0 0 1 120 12 Z" fill="#241050" stroke="#7a5aaa" stroke-width="1"/>
+        <!-- Small thumbnail circles inside each segment (midpoints) -->
+        <defs>
+          <clipPath id="th1"><circle cx="155" cy="56" r="13"/></clipPath>
+          <clipPath id="th2"><circle cx="192" cy="93" r="13"/></clipPath>
+          <clipPath id="th3"><circle cx="197" cy="143" r="13"/></clipPath>
+          <clipPath id="th4"><circle cx="166" cy="183" r="13"/></clipPath>
+          <clipPath id="th5"><circle cx="120" cy="201" r="13"/></clipPath>
+          <clipPath id="th6"><circle cx="74" cy="183" r="13"/></clipPath>
+          <clipPath id="th7"><circle cx="43" cy="143" r="13"/></clipPath>
+          <clipPath id="th8"><circle cx="48" cy="93" r="13"/></clipPath>
+          <clipPath id="th9"><circle cx="85" cy="56" r="13"/></clipPath>
+        </defs>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_1.jpg" x="132" y="33" width="46" height="62" clip-path="url(#th1)"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_2.jpg" x="169" y="70" width="46" height="62" clip-path="url(#th2)"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_3.jpg" x="174" y="120" width="46" height="62" clip-path="url(#th3)"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_9.jpg" x="143" y="160" width="46" height="62" clip-path="url(#th4)"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_10.jpg" x="97" y="178" width="46" height="62" clip-path="url(#th5)"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_17.jpg" x="51" y="160" width="46" height="62" clip-path="url(#th6)"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_18.jpg" x="20" y="120" width="46" height="62" clip-path="url(#th7)"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_35.jpg" x="25" y="70" width="46" height="62" clip-path="url(#th8)"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_36.jpg" x="62" y="33" width="46" height="62" clip-path="url(#th9)"/>
+        <!-- Circle borders for thumbnails -->
+        <circle cx="155" cy="56" r="13" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <circle cx="192" cy="93" r="13" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <circle cx="197" cy="143" r="13" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <circle cx="166" cy="183" r="13" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <circle cx="120" cy="201" r="13" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <circle cx="74" cy="183" r="13" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <circle cx="43" cy="143" r="13" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <circle cx="48" cy="93" r="13" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <circle cx="85" cy="56" r="13" fill="none" stroke="#7a5aaa" stroke-width="1.5"/>
+        <!-- Outer border -->
+        <circle cx="120" cy="120" r="108" fill="none" stroke="#7a5aaa" stroke-width="2"/>
+        <!-- Hub -->
+        <circle cx="120" cy="120" r="22" fill="#08001a" stroke="#7a5aaa" stroke-width="1.5"/>
+        <text x="120" y="123" text-anchor="middle" fill="#7a5aaa" font-size="6" letter-spacing="1">YASUO</text>
+        <!-- Pointer -->
+        <polygon points="120,0 114,14 126,14" fill="#7a5aaa"/>
+      </svg>
+      <!-- Hover preview panel below -->
+      <div style="background:#16003088;border:1px solid #7a5aaa44;border-radius:6px;padding:8px 14px;display:flex;align-items:center;gap:10px;width:180px">
+        <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_1.jpg" style="width:32px;height:44px;object-fit:cover;border-radius:3px;border:1px solid #7a5aaa66"/>
+        <div>
+          <div style="font-size:9px;color:#d8c8f0;letter-spacing:1px">HIGH NOON YASUO</div>
+          <div style="font-size:8px;color:#7a5aaa;margin-top:2px">Hover preview</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Thumbnail Badges + Hover Preview</h3>
+      <p>Circular skin thumbnails sit inside each segment. A preview panel below the wheel shows the name + art of whichever segment your mouse is near. Best of both worlds.</p>
+    </div>
+  </div>
+
+</div>

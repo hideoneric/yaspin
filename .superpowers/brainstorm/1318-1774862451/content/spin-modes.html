@@ -1,0 +1,130 @@
+<h2>Two new spin modes</h2>
+<p class="subtitle">Here's what each would look like. Click one to select your preferred direction.</p>
+
+<div class="cards">
+
+  <!-- 3D Roulette -->
+  <div class="card" data-choice="roulette" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d0118;padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+      <!-- Mode switcher mockup -->
+      <div style="display:flex;gap:6px;margin-bottom:4px;">
+        <div style="padding:4px 12px;border-radius:3px;background:#6b4fa0;color:#ddd0f5;font-size:9px;letter-spacing:2px;">WHEEL</div>
+        <div style="padding:4px 12px;border-radius:3px;background:#6b4fa044;color:#6b4fa0;font-size:9px;letter-spacing:2px;border:1px solid #6b4fa044;">ROULETTE</div>
+        <div style="padding:4px 12px;border-radius:3px;background:#6b4fa022;color:#6b4fa0;font-size:9px;letter-spacing:2px;border:1px solid #6b4fa033;">PLINKO</div>
+      </div>
+      <!-- 3D wheel mockup using CSS perspective -->
+      <div style="perspective:300px;perspective-origin:50% 20%;">
+        <div style="transform:rotateX(55deg);transform-style:preserve-3d;">
+          <svg viewBox="0 0 200 200" width="180" height="180" style="display:block;">
+            <defs>
+              <radialGradient id="rg" cx="45%" cy="40%">
+                <stop offset="0%" stop-color="#2a1560"/>
+                <stop offset="100%" stop-color="#0d0118"/>
+              </radialGradient>
+            </defs>
+            <!-- segments -->
+            <path d="M100 100 L100 0 A100 100 0 0 1 173 50 Z" fill="#1a0b38" stroke="#6b4fa055" stroke-width="1"/>
+            <path d="M100 100 L173 50 A100 100 0 0 1 200 100 Z" fill="#0d0118" stroke="#6b4fa055" stroke-width="1"/>
+            <path d="M100 100 L200 100 A100 100 0 0 1 173 150 Z" fill="#1a0b38" stroke="#6b4fa055" stroke-width="1"/>
+            <path d="M100 100 L173 150 A100 100 0 0 1 100 200 Z" fill="#0d0118" stroke="#6b4fa055" stroke-width="1"/>
+            <path d="M100 100 L100 200 A100 100 0 0 1 27 150 Z" fill="#1a0b38" stroke="#6b4fa055" stroke-width="1"/>
+            <path d="M100 100 L27 150 A100 100 0 0 1 0 100 Z" fill="#0d0118" stroke="#6b4fa055" stroke-width="1"/>
+            <path d="M100 100 L0 100 A100 100 0 0 1 27 50 Z" fill="#1a0b38" stroke="#6b4fa055" stroke-width="1"/>
+            <path d="M100 100 L27 50 A100 100 0 0 1 100 0 Z" fill="#0d0118" stroke="#6b4fa055" stroke-width="1"/>
+            <!-- outer ring -->
+            <circle cx="100" cy="100" r="99" fill="none" stroke="#6b4fa0" stroke-width="2"/>
+            <!-- inner diamonds ring -->
+            <circle cx="100" cy="100" r="82" fill="none" stroke="#6b4fa066" stroke-width="1" stroke-dasharray="4 8"/>
+            <!-- number pockets mockup -->
+            <circle cx="100" cy="8" r="5" fill="#c02040" stroke="#6b4fa0" stroke-width="0.5"/>
+            <circle cx="158" cy="33" r="5" fill="#1a0b38" stroke="#6b4fa0" stroke-width="0.5"/>
+            <circle cx="185" cy="85" r="5" fill="#c02040" stroke="#6b4fa0" stroke-width="0.5"/>
+            <circle cx="170" cy="160" r="5" fill="#1a0b38" stroke="#6b4fa0" stroke-width="0.5"/>
+            <circle cx="100" cy="190" r="5" fill="#c02040" stroke="#6b4fa0" stroke-width="0.5"/>
+            <circle cx="30" cy="160" r="5" fill="#1a0b38" stroke="#6b4fa0" stroke-width="0.5"/>
+            <circle cx="16" cy="85" r="5" fill="#c02040" stroke="#6b4fa0" stroke-width="0.5"/>
+            <circle cx="42" cy="33" r="5" fill="#1a0b38" stroke="#6b4fa0" stroke-width="0.5"/>
+            <!-- hub -->
+            <circle cx="100" cy="100" r="18" fill="#06000f" stroke="#6b4fa0" stroke-width="1.5"/>
+            <circle cx="100" cy="100" r="8" fill="#6b4fa0" opacity="0.8"/>
+          </svg>
+        </div>
+      </div>
+      <!-- ball indicator -->
+      <div style="font-size:9px;color:#6b4fa0;letter-spacing:2px;">◆ BALL IN PLAY ◆</div>
+    </div>
+    <div class="card-body">
+      <h3>3D Roulette Table</h3>
+      <p>The existing wheel tilts into a 3D top-down perspective using CSS transforms, looking like a real casino roulette table. The ball spins around the outer rim before dropping into the winning pocket. Skin thumbnails stay on the segments — same data, new angle.</p>
+    </div>
+  </div>
+
+  <!-- Plinko -->
+  <div class="card" data-choice="plinko" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d0118;padding:16px;display:flex;flex-direction:column;align-items:center;gap:10px;">
+      <div style="display:flex;gap:6px;margin-bottom:4px;">
+        <div style="padding:4px 12px;border-radius:3px;background:#6b4fa044;color:#6b4fa0;font-size:9px;letter-spacing:2px;border:1px solid #6b4fa044;">WHEEL</div>
+        <div style="padding:4px 12px;border-radius:3px;background:#6b4fa044;color:#6b4fa0;font-size:9px;letter-spacing:2px;border:1px solid #6b4fa044;">ROULETTE</div>
+        <div style="padding:4px 12px;border-radius:3px;background:#6b4fa0;color:#ddd0f5;font-size:9px;letter-spacing:2px;">PLINKO</div>
+      </div>
+      <!-- Plinko board mockup -->
+      <svg viewBox="0 0 160 200" width="140" height="175" style="display:block;">
+        <!-- board background -->
+        <rect x="0" y="0" width="160" height="175" rx="4" fill="#0a000e" stroke="#6b4fa044" stroke-width="1"/>
+        <!-- drop zone at top -->
+        <rect x="70" y="2" width="20" height="12" rx="2" fill="#6b4fa044" stroke="#6b4fa0" stroke-width="1"/>
+        <polygon points="80,14 76,20 84,20" fill="#6b4fa0"/>
+        <!-- pegs in triangle pattern -->
+        <!-- row 1 -->
+        <circle cx="80" cy="30" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <!-- row 2 -->
+        <circle cx="65" cy="48" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <circle cx="95" cy="48" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <!-- row 3 -->
+        <circle cx="50" cy="66" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <circle cx="80" cy="66" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <circle cx="110" cy="66" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <!-- row 4 -->
+        <circle cx="35" cy="84" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <circle cx="65" cy="84" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <circle cx="95" cy="84" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <circle cx="125" cy="84" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <!-- row 5 -->
+        <circle cx="20" cy="102" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <circle cx="50" cy="102" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <circle cx="80" cy="102" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <circle cx="110" cy="102" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <circle cx="140" cy="102" r="3" fill="#6b4fa0" opacity="0.9"/>
+        <!-- ball mid-fall -->
+        <circle cx="65" cy="90" r="5" fill="#c8922a" opacity="0.95">
+          <animate attributeName="cy" values="20;90" dur="0.8s" fill="freeze"/>
+        </circle>
+        <!-- slots at bottom -->
+        <rect x="1"   y="130" width="22" height="44" rx="2" fill="#1a0b38" stroke="#6b4fa044" stroke-width="1"/>
+        <rect x="25"  y="130" width="22" height="44" rx="2" fill="#0d0118" stroke="#6b4fa044" stroke-width="1"/>
+        <rect x="49"  y="130" width="22" height="44" rx="2" fill="#1a0b38" stroke="#6b4fa044" stroke-width="1"/>
+        <rect x="73"  y="130" width="22" height="44" rx="2" fill="#0d0118" stroke="#6b4fa044" stroke-width="1"/>
+        <rect x="97"  y="130" width="22" height="44" rx="2" fill="#1a0b38" stroke="#6b4fa044" stroke-width="1"/>
+        <rect x="121" y="130" width="22" height="44" rx="2" fill="#0d0118" stroke="#6b4fa044" stroke-width="1"/>
+        <rect x="137" y="130" width="22" height="44" rx="2" fill="#1a0b38" stroke="#6b4fa044" stroke-width="1"/>
+        <!-- skin thumb placeholders in slots -->
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_1.jpg" x="3" y="134" width="18" height="24" preserveAspectRatio="xMidYMid slice" opacity="0.7"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_2.jpg" x="27" y="134" width="18" height="24" preserveAspectRatio="xMidYMid slice" opacity="0.7"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_3.jpg" x="51" y="134" width="18" height="24" preserveAspectRatio="xMidYMid slice" opacity="0.7"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_9.jpg" x="75" y="134" width="18" height="24" preserveAspectRatio="xMidYMid slice" opacity="0.7"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_10.jpg" x="99" y="134" width="18" height="24" preserveAspectRatio="xMidYMid slice" opacity="0.7"/>
+        <image href="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Yasuo_17.jpg" x="123" y="134" width="18" height="24" preserveAspectRatio="xMidYMid slice" opacity="0.7"/>
+      </svg>
+      <div style="font-size:9px;color:#6b4fa0;letter-spacing:2px;">BALL DROPS · SLOTS SCROLL</div>
+    </div>
+    <div class="card-body">
+      <h3>Plinko Board</h3>
+      <p>A vertical plinko board replaces the wheel entirely. A ball drops from a slot at the top, bouncing off triangle-arranged pegs with simulated physics, and lands in one of the skin slots at the bottom. Enabled skins fill the slots. Satisfying to watch.</p>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:16px;padding:12px 14px;background:#ffffff06;border-radius:6px;border:1px solid #6b4fa022;">
+  <p style="font-size:10px;color:#6b4fa0;letter-spacing:1px;">Both modes share the existing sidebar, theme system, and result overlay — only the center panel changes.</p>
+</div>
